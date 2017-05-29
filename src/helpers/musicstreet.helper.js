@@ -5,7 +5,7 @@ import { Actions } from 'react-native-router-flux';
 
 const ROOT_URL = 'http://kkoong-feed.xyz:4000/api/v1/musicstreet';
 
-export const registerStreet = async (street_name, street_radius, range_color, coordinate, address, music) => {
+export const registerStreet = async (selectedIcon, street_name, street_radius, range_color, coordinate, address, music) => {
 
   let token = await AsyncStorage.getItem('mytoken');
 
@@ -17,6 +17,7 @@ export const registerStreet = async (street_name, street_radius, range_color, co
         'Authorization': token
       },
       data: {
+        selectedIcon: selectedIcon,
         street_name: street_name,
         street_radius: street_radius,
         range_color: range_color,
@@ -40,6 +41,7 @@ export const registerStreet = async (street_name, street_radius, range_color, co
         'Authorization': token
       },
       data: {
+        selectedIcon: selectedIcon,
         street_name: street_name,
         street_radius: street_radius,
         range_color: range_color,
@@ -71,7 +73,7 @@ export const addMusicToStreet = async (id, music) => {
     method: 'POST',
     url: `${ROOT_URL}/addMusic/${id}`,
     headers: {
-      'Authorization': token,
+      'Authorization': token
     },
     data: {
       track: music.track,
@@ -87,6 +89,22 @@ export const addMusicToStreet = async (id, music) => {
       return res;
   }).catch( err => {
       throw err;
+  });
+}
+
+export const deleteMusic = async (streetid, musicid, streetIndex) => {
+  let token = await AsyncStorage.getItem('mytoken');
+
+  return axios({
+    method: 'DELETE',
+    url: `${ROOT_URL}/musicitem/${streetid}/${musicid}`,
+    headers: {
+      'Authorization': token
+    }
+  }).then( res => {
+    return {res, streetIndex};
+  }).catch( err => {
+    throw err;
   });
 }
 

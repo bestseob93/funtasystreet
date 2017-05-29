@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { View, Image, SwipeableListView, TouchableHighlight, Text, StyleSheet } from 'react-native';
 import { Button, ListItem, Left, Thumbnail, Body, Icon, Right, Header } from 'native-base';
-import { Actions } from 'react-native-router-flux';
+import { Actions, ActionConst } from 'react-native-router-flux';
 
 let tracks = [
   {
@@ -111,17 +111,21 @@ class PlayList extends Component {
     super(props);
 
     const ds = SwipeableListView.getNewDataSource();
-
+    console.log(props);
     this.state = {
-      dataSource: ds.cloneWithRowsAndSections(...this.genDataSource(tracks)),
+      dataSource: ds.cloneWithRowsAndSections(...this.genDataSource(this.props.music)),
+      tracks: this.props.music,
+      isDeleted: false
     };
 
     this.renderCustomQuickActions = this.renderCustomQuickActions.bind(this);
     this.renderSeparator = this.renderSeparator.bind(this);
     this.renderRow = this.renderRow.bind(this);
+    this.backTo = this.backTo.bind(this);
   }
 
-  genDataSource(rowData: Array<any>) {
+  genDataSource(rowData) {
+    console.log(rowData);
     const dataBlob = {};
     const sectionIDs = ['Section 0'];
     const rowIDs = [[]];
@@ -144,6 +148,9 @@ class PlayList extends Component {
 
     dataBlob['Section 0'] = {};
     rowData.forEach((el, index) => {
+      console.log(el);
+      console.log('---');
+      console.log(index);
       const rowName = `${index}`;
       dataBlob[sectionIDs[0]][rowName] = {
         id: rowName,
@@ -154,12 +161,13 @@ class PlayList extends Component {
 
     return [dataBlob, sectionIDs, rowIDs];
   }
+  
 
   renderSeparator(sectionID, rowID) {
     return <View key={`${sectionID}-${rowID}`} style={styles.separator} />;
   }
 
-  renderCustomQuickActions(rowData: object, sectionID: string, rowID: string) {
+  renderCustomQuickActions(rowData, sectionID, rowID) {
     return (
       <View style={styles.actionsContainer}>
         <TouchableHighlight
@@ -185,11 +193,26 @@ class PlayList extends Component {
   }
 
   onDeleteRow(index) {
+    const { streetId, streetIndex, onDelete } = this.props;
+    let tracks = this.state.tracks;
+    console.log('ondeleterow');
+    console.log(tracks);
+    console.log(tracks[index]._id);
+
+    onDelete(streetId, tracks[index]._id, streetIndex);
     tracks = [...tracks.slice(0, index), ...tracks.slice(index + 1)];
 
     const ds = SwipeableListView.getNewDataSource();
     this.setState({
       dataSource: ds.cloneWithRowsAndSections(...this.genDataSource(tracks)),
+      tracks: tracks,
+      isDeleted: true
+    });
+  }
+
+  componentWillUnmount() {
+    this.setState({
+      isDeleted: false
     });
   }
 
@@ -205,7 +228,7 @@ class PlayList extends Component {
   }
 
   renderRow(rowData, sectionID, rowID) {
-    const { title, artist, image_url } = rowData;
+    const { track, likes, duration, plays_back, stream_url, artist_url } = rowData;
 
     return (
       <TouchableHighlight
@@ -213,45 +236,30 @@ class PlayList extends Component {
         underlayColor="gray"
         onPress={() => this.onSelectRow(rowID)}>
         <View style={styles.rowContainer}>
-          <Image style={styles.thumbnail} source={{ uri: image_url }} />
+          <Image style={styles.thumbnail} source={{ uri: artist_url }} />
           <View style={styles.textContainer}>
-            <Text numberOfLines={1} style={styles.trackTitle}>{title}</Text>
-            <Text style={styles.artistName}>{artist}</Text>
+            <Text numberOfLines={1} style={styles.trackTitle}>{track}</Text>
+            <View style={{flexDirection: 'row'}}>
+             <Icon style={{marginRight: 5, fontSize: 12}} name="ios-heart"/><Text style={styles.artistName}>{likes}</Text>
+              <Icon style={{marginLeft: 20, marginRight: 5, fontSize: 12}} name="ios-play"/><Text style={styles.artistName}>{plays_back}</Text>
+            </View>
           </View>
         </View>
       </TouchableHighlight>
     );
   }
 
-  // <View>
-  //   <Button onPress={Actions.pop}></Button>
-  //     <ListItem thumbnail>
-  //       <Left>
-  //       <Thumbnail source={{uri: 'https://i1.sndcdn.com/avatars-000230469080-ka0bxj-t500x500.jpg'}} />
-  //       </Left>
-  //       <Body>
-  //         <Text>노래 제목</Text>
-  //         <Text note>
-  //           <Icon style={{fontSize: 13}} name="ios-heart"/>
-  //             13
-  //            <Icon style={{fontSize: 13}} name="ios-play"/>
-  //             14
-  //         </Text>
-  //       </Body>
-  //       <Right>
-  //         <Button transparent>
-  //           <Text><Icon name={'ios-more'}/></Text>
-  //         </Button>
-  //       </Right>
-  //     </ListItem>
-  // </View>
+  backTo() {
+    Actions.pop({refresh: {isDeleted: true} });
+  }
 
   render() {
+    console.log(this.props);
     return (
       <View style={{ flex: 1 }}>
         <Header>
           <Left>
-            <Button transparent onPress={() => Actions.pop()}>
+            <Button transparent onPress={() => this.backTo()}>
               <Icon name="arrow-back"/>
             </Button>
           </Left>
@@ -317,7 +325,7 @@ const styles = StyleSheet.create({
   },
   artistName: {
     fontSize: 12,
-    color: '#8aa822'
+    color: '#a5a5a5'
   },
   separator: {
     height: 0.5,

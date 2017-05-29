@@ -5,7 +5,7 @@ import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
 import PushNotification from 'react-native-push-notification';
 
 import Geofence from '../Geofence';
-import MarkerTest from '../MyMusicMap/MarkerTest';
+import CustomMarker from '../MyMusicMap/MarkerTest';
 import PushController from '../common/PushController';
 
 const { width, height } = Dimensions.get('window');
@@ -102,7 +102,10 @@ class MyStreetMap extends Component {
           onDragEnd={(e) => console.log('onDragEnd', e)}
           onPress={(e) => this.setState({selectedMarker: data.music, selectedStreetName: data.street_name})}
           draggable>
-          <MarkerTest key={ i } myStreetName={data.street_name}/>
+          <CustomMarker key={ i } myStreetIcon={data.selectedIcon}/>
+          <MapView.Callout style={styles.customView}>
+              <Text>{data.street_name}</Text>
+          </MapView.Callout>
         </MapView.Marker>
       );
     })
@@ -188,7 +191,13 @@ const styles = StyleSheet.create({
   },
   scrollViewContainer: {
     padding: 20
-  }
+  },
+  customView: {
+    width: 140,
+    height: 30,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
 });
 
 export default MyStreetMap;

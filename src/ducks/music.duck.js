@@ -7,6 +7,7 @@ export const ADD_MUSIC_TO_STREET = "ADD_MUSIC_TO_STREET";
 export const GET_USER_STREETS = "GET_USER_STREETS";
 export const GET_WHOLE_STREETS = "GET_WHOLE_STREETS";
 export const SET_PLAY_LIST = "SET_PLAY_LIST";
+export const DELETE_MUSIC = "DELETE_MUSIC";
 
 const fetchSelectMusic = (selectedMusic) => {
   if(selectedMusic) {
@@ -22,10 +23,10 @@ export const playSelectedMusic = (selectedMusic) => ({
   payload: fetchSelectMusic(selectedMusic)
 });
 
-export const requestRegisterStreet = (street_name, street_radius, range_color, coordinate, address, music) => ({
+export const requestRegisterStreet = (selectedIcon, street_name, street_radius, range_color, coordinate, address, music) => ({
   type: REGISTER_STREET,
   payload: {
-    promise: helper.registerStreet(street_name, street_radius, range_color, coordinate, address, music)
+    promise: helper.registerStreet(selectedIcon, street_name, street_radius, range_color, coordinate, address, music)
   }
 });
 
@@ -57,6 +58,13 @@ export const requestSetPlayList = (musiclist) => ({
   }
 });
 
+export const requestDeleteMusic = (streetid, musicid, streetIndex) => ({
+  type: DELETE_MUSIC,
+  payload: {
+    promise: helper.deleteMusic(streetid, musicid, streetIndex)
+  }
+});
+
 const requests = {
   fetching: false,
   fetched: false,
@@ -78,7 +86,8 @@ const initialState = {
   request: {
     myStreets: { ...requests },
     wholeStreets: { ...requests },
-    addMusicStreets: { ...requests }
+    addMusicStreets: { ...requests },
+    deleteMusicItem: { ...requests }
   }
 };
 
@@ -194,7 +203,28 @@ export default function reducer(state=initialState, action) {
     case `${SET_PLAY_LIST}_REJECTED`:
       return {
         ...state
-      }
+      };
+    case `${DELETE_MUSIC}_PENDING`:
+      return {
+        ...state,
+        request: {
+          deleteMusicItem: { ...pending }
+        }
+      };
+    case `${DELETE_MUSIC}_FULFILLED`:
+      return {
+        ...state,
+        request: {
+          deleteMusicItem: { ...fulfilled }
+        }
+      };
+    case `${DELETE_MUSIC}_REJECTED`:
+      return {
+        ...state,
+        request: {
+          deleteMusicItem: { ...rejected }
+        }
+      };
     default:
       return state;
   }

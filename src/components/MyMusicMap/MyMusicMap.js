@@ -3,9 +3,9 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { View, Slider, Modal, StyleSheet, ScrollView, Dimensions, TouchableOpacity } from 'react-native';
 import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
-import { Text, Item, Header, Form, Input, Card, CardItem, Left, Right, Body, Button, Title, Icon, Container, Content } from 'native-base';
+import { Text, Item, Header, Form, Input, Card, CardItem, Left, Right, Body, Button, Title, Icon, Container, Content, Picker } from 'native-base';
 import { Actions } from 'react-native-router-flux';
-import MarkerTest from './MarkerTest';
+import CustomMarker from './MarkerTest';
 import axios from 'axios';
 // import RequiredLogin from '../Auth/RequiredLogin';
 
@@ -41,9 +41,12 @@ class MyMusicMap extends Component {
       fillInfoMode: false,
       street_radius: 1000,
       street_name: '',
-      range_color: 'rgba(244, 93, 93, 0.5)'
+      range_color: 'rgba(244, 93, 93, 0.5)',
+      selectedItem: undefined,
+      selectedIcon: 'ios-heart'
     };
 
+    this.onValueChange = this.onValueChange.bind(this);
     this.toggleModal = this.toggleModal.bind(this);
     this.onRegionChange = this.onRegionChange.bind(this);
     this.onNextButtonPress = this.onNextButtonPress.bind(this);
@@ -64,6 +67,12 @@ class MyMusicMap extends Component {
       modalVisible: false
     });
   }
+
+  onValueChange (value) {
+      this.setState({
+        selectedIcon : value
+      });
+    }
 
   toggleModal(visible) {
     this.setState({
@@ -132,7 +141,7 @@ class MyMusicMap extends Component {
         console.log(res);
         let address = res.data.results[3].formatted_address;
         console.log(address);
-        MusicActions.requestRegisterStreet(this.state.street_name, this.state.street_radius, this.state.range_color, coordinate, address, music).then(() => {
+        MusicActions.requestRegisterStreet(this.state.selectedIcon, this.state.street_name, this.state.street_radius, this.state.range_color, coordinate, address, music).then(() => {
           this._clearState();
         });
     }).catch( err => {
@@ -158,6 +167,37 @@ class MyMusicMap extends Component {
         <View style={{flex: 1}}>
           <View style={styles.fillContainer}>
             <View>
+              <Text style={{padding: 10}}>거리 아이콘</Text>
+              <View style={styles.pickerContainer}>
+                <Icon name={this.state.selectedIcon} style={{color: "#66a0ff", fontSize: 15}}/>
+                     <Picker
+                        supportedOrientations={['portrait','landscape']}
+                        headerComponent={
+                            <Header>
+                              <Left>
+                                <Button transparent>
+                                </Button>
+                              </Left>
+                              <Body>
+                                <Title>아이콘 선택</Title>
+                              </Body>
+                              <Right>
+                                <Button transparent>
+                                </Button>
+                              </Right>
+                            </Header>
+                        }
+                        mode="dropdown"
+                        selectedValue={this.state.selectedIcon}
+                        onValueChange={(value) => this.onValueChange(value)}>
+                        <Picker.Item label="데이트 중에서" value="ios-heart"/>
+                        <Picker.Item label="여행 중에서" value="ios-walk"/>
+                        <Picker.Item label="버스 안에서" value="ios-bus"/>
+                        <Picker.Item label="우울한 기분에서" value="ios-rainy"/>
+                        <Picker.Item label="카페 안에서" value="ios-cafe"/>
+                   </Picker>
+                   <Icon style={{fontSize: 13, color: '#c1c1c1'}} name="ios-arrow-forward"/>
+              </View>
               <Text style={{padding: 10}}>거리 제목</Text>
               <Form>
                 <View style={styles.inputContainer}>
@@ -193,7 +233,6 @@ class MyMusicMap extends Component {
               automaticallyAdjustContentInsets={false}
               horizontal={true}
               style={{padding: 10}}>
-
                 <View style={{flex: 1, flexDirection: 'row'}}>
                 {colorArr.map((boxColor) => (
                   <Button key={boxColor}
@@ -282,7 +321,7 @@ class MyMusicMap extends Component {
                          onDragEnd={(e) => console.log('onDragEnd', e)}
                          onPress={(e) => console.log('onPress', e)}
                          draggable>
-                         <MarkerTest myStreetName={this.state.street_name === '' ? '제목 설정' : this.state.street_name}/>
+                         <CustomMarker myStreetIcon={this.state.selectedIcon}/>
                        </MapView.Marker>
                        <MapView.Circle
                          key={(this.state.region.longitude + this.state.region.latitude).toString()}
@@ -317,6 +356,12 @@ const styles = StyleSheet.create({
   fillContainer: {
     marginTop: 30,
     backgroundColor: '#fff'
+  },
+  pickerContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    paddingLeft: 13
   },
   inputContainer: {
     flex: 1,

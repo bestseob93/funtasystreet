@@ -4,9 +4,10 @@ import {
   View,
   Text,
 } from 'react-native';
+import { Icon } from 'native-base';
 
 const propTypes = {
-  myStreetName: PropTypes.string.isRequired,
+  myStreetIcon: PropTypes.string,
   fontSize: PropTypes.number,
 };
 
@@ -16,14 +17,15 @@ const defaultProps = {
 
 class MarkerTest extends React.Component {
   render() {
-    const { fontSize, myStreetName } = this.props;
+    const { fontSize, myStreetIcon } = this.props;
     return (
       <View style={styles.container}>
         <View style={styles.bubble}>
-          <Text style={[styles.myStreetName, { fontSize }]}>{myStreetName}</Text>
+          {/*<Text style={[styles.myStreetName, { fontSize }]}>{myStreetName}</Text>*/}
+          <Icon style={{color: '#fff', fontSize: 13}} name={myStreetIcon}/>
         </View>
-        <View style={styles.arrowBorder} />
-        <View style={styles.arrow} />
+        <View style={styles.arrowBorder}/>
+        <View style={styles.arrow}/>
       </View>
     );
   }
@@ -41,25 +43,21 @@ const styles = StyleSheet.create({
     flex: 0,
     flexDirection: 'row',
     alignSelf: 'flex-start',
-    backgroundColor: '#FF5A5F',
+    backgroundColor: '#66a0ff',
     padding: 2,
     borderRadius: 3,
-    borderColor: '#D23F44',
+    borderColor: '#66a0ff',
     borderWidth: 0.5,
   },
-  dollar: {
-    color: '#FFFFFF',
-    fontSize: 10,
-  },
   myStreetName: {
-    color: '#FFFFFF',
+    color: '#FFF',
     fontSize: 13,
   },
   arrow: {
     backgroundColor: 'transparent',
     borderWidth: 4,
     borderColor: 'transparent',
-    borderTopColor: '#FF5A5F',
+    borderTopColor: '#66a0ff',
     alignSelf: 'center',
     marginTop: -9,
   },
@@ -67,7 +65,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
     borderWidth: 4,
     borderColor: 'transparent',
-    borderTopColor: '#D23F44',
+    borderTopColor: '#66a0ff',
     alignSelf: 'center',
     marginTop: -0.5,
   },

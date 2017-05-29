@@ -1,16 +1,18 @@
 import React, { Component, PropTypes } from 'react';
-import { Dimensions, Modal, View, Slider } from 'react-native';
-import { H3, Button, Thumbnail, Text, Footer, Icon } from 'native-base';
+import { Dimensions, Modal, View } from 'react-native';
+import { Container, List, ListItem, Toast, H3, Button, Content, Header, Left, Body, Right, Thumbnail, Text, Footer, Icon } from 'native-base';
 import { Actions } from 'react-native-router-flux';
 import Sound from 'react-native-sound';
 import MusicControl from 'react-native-music-control';
 import { Col, Row, Grid } from 'react-native-easy-grid';
+import MDIcon from 'react-native-vector-icons/MaterialIcons';
+import Slider from 'react-native-slider';
 
 const musicList = [
   {
-    track: "ZionT - Complex",
-    artist_url: "https://i1.sndcdn.com/artworks-000205587916-9j5h9c-large.jpg",
-    stream_url: "https://api.soundcloud.com/tracks/305424047/stream"
+    track: "10cm - 내 눈에만 보여",
+    artist_url: "https://i1.sndcdn.com/artworks-000197608831-nbu95y-large.jpg",
+    stream_url: "https://api.soundcloud.com/tracks/297042589/stream"
   },
   {
     track: "EPIK HIGH - 420 (feat. Double K, Yankie, Dok2, Sean2Slow, Dumbfoundead, TopBob, MYK)",
@@ -33,9 +35,9 @@ const musicList = [
     stream_url: "https://api.soundcloud.com/tracks/268401598/stream"
   },
   {
-    track: "10cm - 내 눈에만 보여",
-    artist_url: "https://i1.sndcdn.com/artworks-000197608831-nbu95y-large.jpg",
-    stream_url: "https://api.soundcloud.com/tracks/297042589/stream"
+    track: "ZionT - Complex",
+    artist_url: "https://i1.sndcdn.com/artworks-000205587916-9j5h9c-large.jpg",
+    stream_url: "https://api.soundcloud.com/tracks/305424047/stream"
   }
 ];
 
@@ -54,6 +56,7 @@ class MusicBar extends Component {
       songDuration: 1,
       musicList: musicList,
       musicIndex: 0,
+      currentPlayListMode: false
     };
 
     this.sound = new Sound('');
@@ -61,12 +64,18 @@ class MusicBar extends Component {
     this.togglePlay = this.togglePlay.bind(this);
     this.toggleShuffle = this.toggleShuffle.bind(this);
     this.toggleVolume = this.toggleVolume.bind(this);
+    this.togglePlayList = this.togglePlayList.bind(this);
     this.randomMusicIndex = this.randomMusicIndex.bind(this);
     this.setMusic = this.setMusic.bind(this);
     this.goBackward = this.goBackward.bind(this);
     this.goForward = this.goForward.bind(this);
+    this.updateTime = this.updateTime.bind(this);
+    this.onSlidingStart = this.onSlidingStart.bind(this);
+    this.onSlidingChange = this.onSlidingChange.bind(this);
+    this.onSlidingComplete = this.onSlidingComplete.bind(this);
     this.updateMusicControl = this.updateMusicControl.bind(this);
     this.toggleModal = this.toggleModal.bind(this);
+    this.renderPlayListItems = this.renderPlayListItems.bind(this);
   }
 
   componentDidMount() {
@@ -97,11 +106,14 @@ class MusicBar extends Component {
 
   componentWillReceiveProps(nextProps) {
     console.log(this.props.nowPlayList);
+    console.log(nextProps.nowPlayList);
     if(this.state.musicList === nextProps.nowPlayList) return;
-    this.setState({
-      musicList: nextProps.nowPlayList
-    });
-    this.setMusic();
+    if(nextProps.nowPlayList.length > 0) {
+      this.setState({
+        musicList: nextProps.nowPlayList
+      });
+      this.setMusic();
+    }
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -137,14 +149,21 @@ class MusicBar extends Component {
     this.setState({ shuffle: !this.state.shuffle });
   }
 
-  toggleVolume(){
-    this.setState({ muted: !this.state.muted });
+  toggleVolume(mute) {
+    console.log(mute);
+    this.setState({ muted: mute });
     if (this.state.muted) {
       this.sound.setVolume(0);
     }
     else {
       this.sound.setVolume(1);
     }
+  }
+
+  togglePlayList(isPlayList) {
+    this.setState({
+      currentPlayListMode: isPlayList
+    });
   }
 
   randomMusicIndex() {
@@ -164,6 +183,8 @@ class MusicBar extends Component {
     this.sound = new Sound({uri: musicUrl}, (err) => {
       if(err) throw err;
       this.updateMusicControl();
+
+      this.setState({ songDuration: this.sound.getDuration() });
 
       this.sound.play((success) => {
         if(success) {
@@ -192,11 +213,49 @@ class MusicBar extends Component {
   }
 
   goForward() {
-    this.setState({
-      musicIndex: this.state.shuffle ? this.randomMusicIndex : this.state.musicIndex + 1,
-      currentTime: 0,
-      playing: true
+    console.log(this.state.musicList.length);
+    console.log(this.state.musicIndex);
+
+    if(this.state.musicIndex > this.state.musicList.length - 1 || this.state.musicIndex === this.state.musicList.length - 1) {
+          Toast.show({
+              text: '마지막 곡입니다',
+              position: 'bottom',
+              buttonText: 'Okay',
+              type: 'danger'
+            });
+    } else {
+      this.setState({
+        musicIndex: this.state.shuffle ? this.randomMusicIndex : this.state.musicIndex + 1,
+        currentTime: 0,
+        playing: true
+      });
+    }
+  }
+
+  updateTime(sound, obj) {
+    this.sound.getCurrentTime((seconds) => {
+      // Changes the volume
+      MusicControl.updatePlayback({
+        elapsedTime: seconds
+      });
+
+      this.setState({ currentTime: seconds});
     });
+  }
+
+  onSlidingStart() {
+    this.setState({ sliding: true });
+  }
+
+  onSlidingChange(value) {
+    let newPosition = value * this.state.songDuration;
+    this.setState({ currentTime: newPosition });
+  }
+
+  onSlidingComplete() {
+    console.log(this.state.currentTime);
+    this.sound.setCurrentTime(this.state.currentTime);
+    this.setState({ sliding: false });
   }
 
   updateMusicControl()  {
@@ -225,18 +284,42 @@ class MusicBar extends Component {
     });
   }
 
+  renderPlayListItems(datas) {
+    console.log(datas);
+    return datas.map((item) => {
+      return (
+        <ListItem thumbnail key={item.stream_url}>
+          <Left>
+            <Thumbnail source={{uri: `${item.artist_url}`}}/>
+          </Left>
+          <Body>
+            <Text>{item.track}</Text>
+          </Body>
+          <Right>
+            <Button transparent></Button>
+          </Right>
+        </ListItem>
+      )
+    });
+  }
+
   render() {
     const { toggleModal,
             togglePlay,
             toggleShuffle,
             toggleVolume,
+            togglePlayList,
             goBackward,
-            goForward } = this;
+            goForward,
+            onSlidingStart,
+            onSlidingChange,
+            onSlidingComplete,
+            renderPlayListItems } = this;
 
     const { musicBarStyle, thumbnailSize, buttonStyle } = style;
 
     let tSizeArtworkUrl = '';
-
+    console.log(this.state.musicList[this.state.musicIndex].artist_url);
     if(this.state.musicList[this.state.musicIndex].artist_url !== null) {
       tSizeArtworkUrl = this.state.musicList[this.state.musicIndex].artist_url.replace("large.jpg", "t500x500.jpg");
     } else {
@@ -244,7 +327,12 @@ class MusicBar extends Component {
       tSizeArtworkUrl = '';
     }
 
-    let songPercentage = this.state.currentTime / this.state.songDuration;
+    let songPercentage;
+    if(this.state.songDunration) {
+      songPercentage = this.state.currentTime / this.state.songDunration;
+    } else {
+      songPercentage = 0;
+    }
 
     console.log(songPercentage);
 
@@ -272,21 +360,43 @@ class MusicBar extends Component {
               { this.state.playing ? <Icon style={{color: '#ffffff'}} name="ios-pause" onPress={() => togglePlay()}/> :
                                <Icon style={{color: '#ffffff'}} name="ios-play" onPress={() => togglePlay()}/>}
                 <Icon style={{color: '#ffffff'}} name="ios-skip-forward" onPress={() => goForward()}/>
-                <Icon name="list" style={{color: '#ffffff'}} onPress={Actions.playlistindepend}/>
+                <MDIcon name="playlist-play" style={{color: '#ffffff', fontSize: 28}} onPress={Actions.playlistindepend}/>
             </View>
         </Button>
         <Modal
           animationType={"slide"}
           transparent={false}
           visible={this.state.modalVisible}>
-          <Grid>
+          {this.state.currentPlayListMode ? (
+            <Container>
+              <Header>
+                <Left>
+                  <Button transparent onPress={() => togglePlayList(false)}>
+                    <Icon name="ios-arrow-back"/>
+                  </Button>
+                </Left>
+                <Body>
+                  <Text>현재 재생 목록</Text>
+                </Body>
+                <Right>
+                </Right>
+              </Header>
+              <Content>
+                <List>
+                  <ListItem><Text>hihi</Text></ListItem>
+                  {renderPlayListItems(this.state.musicList)}
+                </List>
+              </Content>
+            </Container>
+          ) :
+          (<Grid>
             <Row size={10} style={{ backgroundColor: '#ffffff' }}>
               <View style={style.headerContainer}>
                 <Button transparent onPress={() => toggleModal(false)}>
-                  <Icon name="ios-arrow-down" style={{color: 'blue', fontSize: 27}}/>
+                  <Icon name="ios-arrow-down" style={{color: 'black', fontSize: 27}}/>
                 </Button>
-                <Button transparent onPress={() => toggleModal(false)}>
-                  <Icon name="list" style={{color: 'blue', fontSize: 30}}/>
+                <Button transparent onPress={() => togglePlayList(true)}>
+                  <MDIcon name="playlist-play" style={{color: 'black', fontSize: 30}}/>
                 </Button>
               </View>
             </Row>
@@ -300,12 +410,25 @@ class MusicBar extends Component {
                 <H3 style={{textAlign: 'center', width: 250}}>{this.state.musicList[this.state.musicIndex].track}</H3>
               </View>
             </Row>
+            <Row size={20} style={{ backgroundColor: '#fff'}}>
+              <View style={style.sliderContainer}>
+                <Slider
+                  onSlidingStart={ () => onSlidingStart() }
+                  onSlidingComplete={ () => onSlidingComplete() }
+                  onValueChange={ () => onSlidingChange() }
+                  minimumTrackTintColor='#851c44'
+                  style={ style.slider }
+                  trackStyle={ style.sliderTrack }
+                  thumbStyle={ style.sliderThumb }
+                  value={ songPercentage }/>
+              </View>
+            </Row>
             <Row size={20} style={{ backgroundColor: '#ffffff' }}>
             <View style={style.footerContainer}>
               <View style={style.spaceView}></View>
               <View style={style.iconContainer}>
-                { this.state.muted ? <Icon style={style.iconNotMuted} name="ios-volume-mute" onPress={() => toggleVolume()}/> :
-                                       <Icon style={style.iconMuted} name="ios-volume-mute" onPress={() => toggleVolume()}/>}
+                { this.state.muted ? <Icon style={style.iconMuted} name="volume-up" onPress={() => toggleVolume(false)}/> :
+                                       <Icon style={style.iconMuted} name="volume-up" onPress={() => toggleVolume(true)}/>}
                 <Icon style={style.iconStyle} name="ios-skip-backward" onPress={() => goBackward()}/>
                 { this.state.playing ? <Icon style={style.iconPlayPause} name="ios-pause" onPress={() => togglePlay()}/> :
                                        <Icon style={style.iconPlayPause} name="ios-play" onPress={() => togglePlay()}/>  }
@@ -316,7 +439,8 @@ class MusicBar extends Component {
               <View style={style.spaceView}></View>
             </View>
             </Row>
-          </Grid>
+          </Grid>)}
+          
         </Modal>
       </View>
     );
@@ -362,6 +486,26 @@ const style = {
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center'
+  },
+  sliderContainer: {
+    width: Dimensions.get('window').width
+  },
+  slider: {
+    height: 20,
+  },
+  sliderTrack: {
+    height: 2,
+    backgroundColor: '#333',
+  },
+  sliderThumb: {
+    width: 10,
+    height: 10,
+    backgroundColor: '#f62976',
+    borderRadius: 10 / 2,
+    shadowColor: 'red',
+    shadowOffset: {width: 0, height: 0},
+    shadowRadius: 2,
+    shadowOpacity: 1,
   },
   footerContainer: {
     flex: 1,

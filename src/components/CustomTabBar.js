@@ -15,7 +15,7 @@ import Geofence from './Geofence';
 import * as music from '../ducks/music.duck';
 
 class CustomTabBar extends Component {
-  watchID: ?number = null;
+  watchID = null;
 
   componentDidMount() {
     const { myStreets } = this.props;

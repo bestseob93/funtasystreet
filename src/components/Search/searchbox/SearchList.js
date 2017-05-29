@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { TouchableHighlight, Dimensions, View, Modal, ListView, RefreshControl } from 'react-native';
 import { Left, Icon, Body, Right, Thumbnail, ListItem, Text, Button, Content } from 'native-base';
-import { Actions } from 'react-native-router-flux';
+import { Actions, ActionConst } from 'react-native-router-flux';
 import { CommonSpinner } from '../../common';
 
 const propTypes = {
@@ -112,11 +112,9 @@ class SearchList extends Component {
   renderRow(item) {
     const { isFetching } = this.props;
     console.log(item);
-    let artwork_url;
+
     if(item.artwork_url === null) {
-      artwork_url = "https://c1.staticflickr.com/5/4194/33900642883_e12fce7386_b.jpg"
-    } else {
-      artwork_url = item.artwork_url
+      item.artwork_url = "https://c1.staticflickr.com/5/4194/33900642883_e12fce7386_b.jpg"
     }
 
     if(isFetching) {
@@ -125,7 +123,7 @@ class SearchList extends Component {
       return (
         <ListItem thumbnail onPress={() => this.playSelectedMusic(item)}>
           <Left>
-          <Thumbnail source={{uri: `${artwork_url}`}} />
+          <Thumbnail source={{uri: `${item.artwork_url}`}} />
           </Left>
           <Body>
             <Text style={{fontSize: 16}}>{item.title}</Text>
@@ -187,7 +185,7 @@ class SearchList extends Component {
   async existStreetButtonPress() {
     const { clearState } = this;
 
-    await Actions.mymusicstreet({
+    await Actions.mymusicstreetmain({
       track: this.state.selectMusic.title,
       likes: this.state.selectMusic.likes_count,
       plays_back: this.state.selectMusic.playback_count,

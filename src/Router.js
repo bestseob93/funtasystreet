@@ -20,6 +20,7 @@ const RouterComponent = () => {
                 <Scene key="playlist" hideNavBar sceneName="playlisst" component={PlayList} title="PlayList"/>
                 <Scene key="testMap" hideNavBar sceneName="testMap" component={AnimatedView} title="testMap"/>
               </Scene>
+              <Scene key="mymusicstreetmain" hideNavBar component={MusicStreet} title="MyMusicStreet"/>
             </Scene>
           <Scene key="login" direction="vertical" component={Login} title="로그인"/>
           <Scene key="register" component={Register} title="회원가입"/>
