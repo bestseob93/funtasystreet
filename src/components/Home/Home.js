@@ -1,67 +1,52 @@
 import React, { Component } from 'react';
-import { Dimensions, Text, View, AsyncStorage } from 'react-native';
+import { Dimensions, Text, ScrollView } from 'react-native';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { Button } from 'native-base';
-import { Actions } from 'react-native-router-flux';
-import { StreetView } from '../../components';
+import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
 
-import * as maps from '../../ducks/maps.duck';
+import MyStreetMap from './MyStreetMap';
+
+import * as music from '../../ducks/music.duck';
 
 class Home extends Component {
-  constructor(props) {
-    super(props);
 
-    this._loadInitialState = this._loadInitialState.bind(this);
-  }
+  async componentDidMount() {
+    const { MusicActions } = this.props;
 
-  componentDidMount() {
-    this._loadInitialState();
-  }
-
-  async _loadInitialState() {
     try {
-      var valueToken = await AsyncStorage.getItem('mytoken');
-      if (valueToken !== null) {
-        console.log(valueToken);
-      }
-    } catch (error) {
-      console.log(error);
+      await MusicActions.requestUserStreets();
+      await MusicActions.requestWholeStreets();
+    } catch (e) {
+      console.error(e);
     }
-  };
+  }
 
   render() {
+    const { onRegionChange } = this;
+    const { myStreets, wholeStreets } = this.props;
+
     return (
-      <View style={{flex: 1}}>
-        <View style={styles.streetBox}>
-          <Text>seongbuk gu</Text>
-        </View>
-        <View style={{zIndex: 10}}>
-          <StreetView currentAddress={this.props.mapStatus.currentAddress}/>
-        </View>
-      </View>
+      <ScrollView
+        style={{marginBottom: 100}}>
+        <MyStreetMap myStreets={myStreets}/>
+      </ScrollView>
     );
   }
 }
 
-const styles = {
-  streetBox: {
-    position: 'absolute',
-    bottom: 30,
-    left: 0,
-    right: 0,
-    zIndex: 30,
-    backgroundColor: 'rgba(32, 199, 238, 5)',
-    borderRadius: 5
-  }
-};
 export default connect(
   state => {
     return {
-      mapStatus: {
-        currentAddress: state.maps.address
-      }
+      myStreets: state.music.myStreets,
+      wholeStreets: state.music.wholeStreets
     };
   },
-  null
+  dispatch => {
+    return {
+      MusicActions: bindActionCreators({
+        requestUserStreets: music.requestGetUserStreets,
+        requestWholeStreets: music.requestGetWholeStreets
+      }, dispatch)
+    };
+  }
 )(Home);

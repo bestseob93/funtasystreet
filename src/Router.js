@@ -13,7 +13,7 @@ const RouterComponent = () => {
               <Scene key="home" initial sceneName="home" hideNavBar component={TabView} title="Funtasy Street" navigationBarStyle={{backgroundColor:'white'}} icon={TabIcon}/>
               <Scene key="search" sceneName="search" hideNavBar component={TabView} title="Search" navigationBarStyle={{backgroundColor:'white', borderBottomColor: 'transparent'}} icon={TabIcon}/>
               <Scene key="mymusicmap" sceneName="mymusicmap" component={TabView} title="MyMusicMap" hideNavBar icon={TabIcon}/>
-              <Scene key="map" sceneName="navigate" hideNavBar component={TabView} title="MapSearch" navigationBarStyle={{backgroundColor: 'white'}} icon={TabIcon}/>
+              <Scene key="map" sceneName="navigate" hideNavBar component={TabView} title="MyStreetView" navigationBarStyle={{backgroundColor: 'white'}} icon={TabIcon}/>
               <Scene key="mypage" sceneName="person" hideNavBar title="MyPage" navigationBarStyle={{backgroundColor:'white'}} icon={TabIcon}>
                 <Scene key="mypagemain" hideNavBar component={TabView} title="MyPage" />
                 <Scene key="mymusicstreet" hideNavBar component={MusicStreet} title="MyMusicStreet"/>

@@ -15,11 +15,11 @@ import NavigationDrawer from './NavigationDrawer';
 
 // 메인 4개 탭
 import Home from './Home/Home';
-import StreetView from './Home/StreetView'; // 스트리트 뷰
 import Search from './Search/Search';
 import MyMusicMap from './MyMusicMap/MyMusicMap';
 import MyMusicMapFill from './MyMusicMap/MyMusicMapFill';
-import MapSearch from './MapSearch/MapSearch';
+import StreetView from './MyStreetView/StreetView'; // 스트리트 뷰
+import MyStreetView from './MyStreetView/MyStreetView';
 import MyPage from './MyPage/MyPage';
 // 뮤직 거리
 import MusicStreet from './MyPage/MusicStreet';
@@ -43,7 +43,7 @@ export {
   Search,
   MyMusicMap,
   MyMusicMapFill,
-  MapSearch,
+  MyStreetView,
   StreetView,
   CustomTabBar,
   TabView,

@@ -23,7 +23,8 @@ class MyStreetMap extends Component {
         latitudeDelta: 0.0922,
         longitudeDelta: 0.0421
       },
-      selectedMarker: []
+      selectedMarker: [],
+      selectMode: false
     };
 
     this.pushAlarm = this.pushAlarm.bind(this);
@@ -33,6 +34,7 @@ class MyStreetMap extends Component {
     // this.renderMusics = this.renderMusics.bind(this);
     // this.renderMusicItems = this.renderMusicItems.bind(this);
     this.loadPlayList = this.loadPlayList.bind(this);
+    this.renderSelectInfos = this.renderSelectInfos.bind(this);
   }
 
   // TODO: 이부분 더 좋은 로직으로 수정필요
@@ -100,7 +102,7 @@ class MyStreetMap extends Component {
           onDrag={(e) => console.log('onDrag', e)}
           onDragStart={(e) => console.log('onDragStart', e)}
           onDragEnd={(e) => console.log('onDragEnd', e)}
-          onPress={(e) => this.setState({selectedMarker: data.music, selectedStreetName: data.street_name})}
+          onPress={(e) => this.setState({selectedMarker: data.music, selectedStreetName: data.street_name, selectMode: true})}
           draggable>
           <CustomMarker key={ i } myStreetIcon={data.selectedIcon}/>
           <MapView.Callout style={styles.customView}>
@@ -128,35 +130,21 @@ class MyStreetMap extends Component {
 
   loadPlayList() {
     let musics = this.state.selectedMarker;
-    console.log(musics);
-    return (
-      <ListItem thumbnail>
-        <Left>
-          <Thumbnail key={musics[0].artist_url} size={20} source={{uri: `${musics[0].artist_url}`}} />
-        </Left>
-          <Body><Text key={musics[0].track}>{musics[0].track}</Text></Body>
-      </ListItem>
-    )
+    return musics.map((item, i) => {
+      return (
+        <ListItem thumbnail key={i}>
+          <Left>
+            <Thumbnail key={item.artist_url} size={20} source={{uri: `${item.artist_url}`}} />
+          </Left>
+            <Body><Text key={item.track}>{item.track}</Text></Body>
+        </ListItem>
+      );
+    });
   }
 
-  render() {
-    const { onRegionChange, renderMarkers, renderCircles, loadPlayList } = this;
-    const { myStreets } = this.props;
-
-    console.log(this.state);
+  renderSelectInfos() {
     return (
-      <Container>
-        <PushController/>
-        <Content>
-            <MapView provider={PROVIDER_GOOGLE}
-                     style={styles.map}
-                     initialRegion={this.state.region}
-                     region={this.state.region}
-                     onRegionChange={onRegionChange}>
-                     {renderMarkers(myStreets)}
-                     {renderCircles(myStreets)}
-            </MapView>
-            <View style={styles.scrollViewContainer}>
+          <View style={styles.scrollViewContainer}>
               <List>
                 <ListItem itemDivider first>
                   <Text>거리 제목</Text>
@@ -174,9 +162,30 @@ class MyStreetMap extends Component {
               <ListItem itemDivider>
                 <Text>음악 목록</Text>
               </ListItem>
-                {this.state.selectedMarker.length > 0 ? loadPlayList() : null}
+                {this.state.selectedMarker.length > 0 ? this.loadPlayList() : (<Text>음악이 없습니다.</Text>) }
               </List>
           </View>
+    );
+  }
+
+  render() {
+    const { onRegionChange, renderMarkers, renderCircles, renderSelectInfos } = this;
+    const { myStreets } = this.props;
+
+    console.log(this.state);
+    return (
+      <Container>
+        <PushController/>
+        <Content>
+            <MapView provider={PROVIDER_GOOGLE}
+                     style={this.state.selectMode ? styles.mapHalf : styles.map}
+                     initialRegion={this.state.region}
+                     region={this.state.region}
+                     onRegionChange={onRegionChange}>
+                     {renderMarkers(myStreets)}
+                     {renderCircles(myStreets)}
+            </MapView>
+            { this.state.selectMode ? renderSelectInfos() : (<Text></Text>)}
           </Content>
       </Container>
     );
@@ -185,6 +194,11 @@ class MyStreetMap extends Component {
 
 const styles = StyleSheet.create({
   map: {
+    width: width,
+    height: height,
+    zIndex: -1
+  },
+  mapHalf: {
     width: width,
     height: mapHeight,
     zIndex: -1

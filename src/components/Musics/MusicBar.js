@@ -8,6 +8,7 @@ import { Col, Row, Grid } from 'react-native-easy-grid';
 import MDIcon from 'react-native-vector-icons/MaterialIcons';
 import Slider from 'react-native-slider';
 
+const timer = null;
 const musicList = [
   {
     track: "10cm - 내 눈에만 보여",
@@ -69,7 +70,6 @@ class MusicBar extends Component {
     this.setMusic = this.setMusic.bind(this);
     this.goBackward = this.goBackward.bind(this);
     this.goForward = this.goForward.bind(this);
-    this.updateTime = this.updateTime.bind(this);
     this.onSlidingStart = this.onSlidingStart.bind(this);
     this.onSlidingChange = this.onSlidingChange.bind(this);
     this.onSlidingComplete = this.onSlidingComplete.bind(this);
@@ -182,10 +182,10 @@ class MusicBar extends Component {
 
     this.sound = new Sound({uri: musicUrl}, (err) => {
       if(err) throw err;
+      this.setState({ songDuration: this.sound.getDuration() });
       this.updateMusicControl();
 
-      this.setState({ songDuration: this.sound.getDuration() });
-
+      timer = setInterval(this.updateTime.bind(this, this.sound), 1000);
       this.sound.play((success) => {
         if(success) {
           console.log('music playing successed');
@@ -233,7 +233,7 @@ class MusicBar extends Component {
   }
 
   updateTime(sound, obj) {
-    this.sound.getCurrentTime((seconds) => {
+    sound.getCurrentTime((seconds) => {
       // Changes the volume
       MusicControl.updatePlayback({
         elapsedTime: seconds
@@ -328,13 +328,16 @@ class MusicBar extends Component {
     }
 
     let songPercentage;
-    if(this.state.songDunration) {
+    console.log(this.state.songDuration);
+    if(this.state.songDunration !== undefined) {
+      console.log('in if: ', this.state.songDuration);
       songPercentage = this.state.currentTime / this.state.songDunration;
     } else {
+      console.log('else?');
       songPercentage = 0;
     }
 
-    console.log(songPercentage);
+    console.log('songPercentage:' ,songPercentage);
 
     let iconMuted = this.state.muted ? {color: '#f62976'} : {color: '#000'};
     let iconShuffled = this.state.shuffled ? {color: '#f62976'} : {color: '#000'};

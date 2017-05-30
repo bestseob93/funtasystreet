@@ -2,7 +2,7 @@ import React, { PropTypes, Component } from 'react';
 
 import { Container, Text, Button, Footer } from 'native-base';
 import { Actions } from 'react-native-router-flux';
-import { Home, Search, MyPage, MyMusicMap, MusicBar, MapSearch } from '../components';
+import { Home, Search, MyPage, MyMusicMap, MusicBar, MyStreetView } from '../components';
 
 const contextTypes = {
   drawer: PropTypes.object
@@ -29,8 +29,8 @@ class TabView extends Component {
         return <Search/>;
       case 'Funtasy Street':
         return <Home/>;
-      case 'MapSearch':
-        return <MapSearch/>;
+      case 'MyStreetView':
+        return <MyStreetView/>;
       case 'MyPage':
         return <MyPage/>;
       default:
