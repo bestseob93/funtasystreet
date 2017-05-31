@@ -144,7 +144,7 @@ export default function reducer(state=initialState, action) {
       return {
         ...state,
         request: {
-          myStreets: {...rejected}
+          myStreets: {...rejected, error: payload}
         }
       };
     case `${GET_WHOLE_STREETS}_PENDING`:

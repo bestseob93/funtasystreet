@@ -1,4 +1,4 @@
-import React, { PropTypes } from 'react';
+import React, { Component, PropTypes } from 'react';
 import {
   StyleSheet,
   View,
@@ -15,7 +15,7 @@ const defaultProps = {
   fontSize: 13,
 };
 
-class MarkerTest extends React.Component {
+class MarkerTest extends Component {
   render() {
     const { fontSize, myStreetIcon } = this.props;
     return (

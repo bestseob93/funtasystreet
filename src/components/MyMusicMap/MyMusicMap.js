@@ -7,6 +7,7 @@ import { Text, Item, Header, Form, Input, Card, CardItem, Left, Right, Body, But
 import { Actions } from 'react-native-router-flux';
 import CustomMarker from './MarkerTest';
 import axios from 'axios';
+import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 // import RequiredLogin from '../Auth/RequiredLogin';
 
 import * as music from '../../ducks/music.duck';
@@ -27,14 +28,14 @@ class MyMusicMap extends Component {
       modalVisible: true,
       position: null,
       region: {
-        latitude: 37.582176,
-        longitude: 127.0095657,
+        latitude: props.position.lat,
+        longitude: props.position.lng,
         latitudeDelta: 0.0922,
         longitudeDelta: 0.0421
       },
       initialRegion: {
-        latitude: 37.582176,
-        longitude: 127.0095657,
+        latitude: props.position.lat,
+        longitude: props.position.lng,
         latitudeDelta: 0.0922,
         longitudeDelta: 0.0421
       },
@@ -114,10 +115,8 @@ class MyMusicMap extends Component {
 
   handleSubmit() {
     const { MapsActions, MusicActions } = this.props;
-    console.log(this.props);
-
+    
     let music;
-
     if(this.props.isFromSearch) {
       music = {
         track: this.props.track,
@@ -220,7 +219,7 @@ class MyMusicMap extends Component {
                   value={this.state.street_radius}
                   minimumValue={250}
                   maximumValue={2000}
-                  step={25}
+                  step={50}
                   style={styles.slider}
                   onValueChange={(value) => this.setState({street_radius: value})} />
             </View>
@@ -251,12 +250,13 @@ class MyMusicMap extends Component {
     };
 
     const varTop = height - 150;
-     const hitSlop = {
+    const hitSlop = {
        top: 15,
        bottom: 15,
        left: 15,
        right: 15,
-     }
+     };
+
      bbStyle = function(vheight) {
        return {
          position: 'absolute',
@@ -301,9 +301,7 @@ class MyMusicMap extends Component {
                   onPress={ () => _findMe() }
                 >
                     {this.state.fillInfoMode ? (<Text></Text>) : (
-                      <Text style={{fontWeight: 'bold', color: 'black',}}>
-                        Find Me
-                      </Text>
+                      <MaterialIcon name="my-location" style={{fontWeight: 'bold', fontSize: 30, color: 'black',}}/>
                     )}
                 </TouchableOpacity>
               </View>
@@ -312,19 +310,18 @@ class MyMusicMap extends Component {
                        initialRegion={this.state.initialRegion}
                        region={this.state.region}
                        showsMyLocationButton={true}
+                       showsUserLocation={true}
                        onRegionChange={onRegionChange}>
                        <MapView.Marker
                          coordinate={{latitude: this.state.region.latitude, longitude: this.state.region.longitude}}
-                         onSelect={(e) => console.log('onSelect', e)}
                          onDrag={(e) => console.log('onDrag', e)}
                          onDragStart={(e) => console.log('onDragStart', e)}
                          onDragEnd={(e) => console.log('onDragEnd', e)}
-                         onPress={(e) => console.log('onPress', e)}
                          draggable>
                          <CustomMarker myStreetIcon={this.state.selectedIcon}/>
                        </MapView.Marker>
                        <MapView.Circle
-                         key={(this.state.region.longitude + this.state.region.latitude).toString()}
+                         key={(this.props.position.lat + this.props.position.lng).toString()}
                          center={{latitude: this.state.region.latitude, longitude: this.state.region.longitude}}
                          radius={this.state.street_radius}
                          strokeColor='transparent'
@@ -378,13 +375,12 @@ const styles = StyleSheet.create({
    width: 75,
    height: 75,
    borderRadius: 85/2,
-   backgroundColor: 'rgba(252, 253, 253, 0.9)',
+   backgroundColor: '#fff',
    justifyContent: 'center',
    alignItems: 'center',
    shadowColor: 'black',
    shadowRadius: 8,
    shadowOpacity: 0.12,
-   opacity: .6,
    zIndex: 10,
   }
 });
@@ -395,7 +391,8 @@ export default connect(
   state => {
     return {
       isLogged: state.auth.authStatus.isLogged,
-      isFetching: state.music.registerRequest.fetching
+      isFetching: state.music.registerRequest.fetching,
+      position: state.maps.position
     };
   },
   dispatch => {

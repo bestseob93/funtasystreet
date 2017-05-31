@@ -28,8 +28,6 @@ import MusicStreet from './MyPage/MusicStreet';
 import MusicBar from './Musics/MusicBar';
 import PlayList from './Musics/PlayList';
 
-import AnimatedView from './AnimatedView';
-
 export {
   Home,
   First,
@@ -47,6 +45,5 @@ export {
   StreetView,
   CustomTabBar,
   TabView,
-  NavigationDrawer,
-  AnimatedView
+  NavigationDrawer
 };

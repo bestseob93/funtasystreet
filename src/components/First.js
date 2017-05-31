@@ -31,12 +31,19 @@ class First extends Component {
   }
 
   async loadInitialStates() {
+    let self = this;
     this.props.AuthActions.checkAuth();
-
-    await this.props.MapsActions.getAddress(37.582176, 127.0095657);
-    if(this.props.isLogged) {
-      await this.props.MusicActions.requestUserStreets();
-    }
+    navigator.geolocation.getCurrentPosition(
+      ({coords}) => {
+        const {latitude, longitude} = coords
+        self.props.MapsActions.getAddress(latitude, longitude);
+        if(self.props.isLogged) {
+           self.props.MusicActions.requestUserStreets();
+        }
+      },
+      (error) => alert(JSON.stringify(error)),
+      {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000});
+  
   }
 
   handleAppStateChange(appState) {

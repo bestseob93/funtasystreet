@@ -72,7 +72,6 @@ class Search extends Component {
           <Item>
             <Icon name="search"/>
             <Input placeholder="음악 검색"
-                   returnKeyType="done"
                    keyboardType="default"
                    autoCapitalize="none"
                    onChangeText={(text) => {this.setState({keywords: text})}}

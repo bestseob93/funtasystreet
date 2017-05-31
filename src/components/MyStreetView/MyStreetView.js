@@ -6,38 +6,17 @@ import { Button } from 'native-base';
 import { Actions } from 'react-native-router-flux';
 import { StreetView } from '../../components';
 
-import * as maps from '../../ducks/maps.duck';
-
 class MyStreetView extends Component {
-  constructor(props) {
-    super(props);
-
-    this._loadInitialState = this._loadInitialState.bind(this);
-  }
-
-  componentDidMount() {
-    this._loadInitialState();
-  }
-
-  async _loadInitialState() {
-    try {
-      var valueToken = await AsyncStorage.getItem('mytoken');
-      if (valueToken !== null) {
-        console.log(valueToken);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
 
   render() {
+    const { mapStatus } = this.props;
     return (
       <View style={{flex: 1}}>
         <View style={styles.streetBox}>
           <Text>seongbuk gu</Text>
         </View>
-        <View style={{zIndex: 10}}>
-          <StreetView currentAddress={this.props.mapStatus.currentAddress}/>
+        <View style={{zIndex: -1}}>
+          <StreetView currentAddress={mapStatus.currentAddress} position={mapStatus.position}/>
         </View>
       </View>
     );
@@ -55,11 +34,13 @@ const styles = {
     borderRadius: 5
   }
 };
+
 export default connect(
   state => {
     return {
       mapStatus: {
-        currentAddress: state.maps.address
+        currentAddress: state.maps.address,
+        position: state.maps.position
       }
     };
   },

@@ -43,18 +43,18 @@ class CustomTabBar extends Component {
       (error) => alert(error.message),
       { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
     );
-    this.watchID = navigator.geolocation.watchPosition((position) => {
-      let point = {
-        lat: position.coords.latitude,
-        lng: position.coords.longitude
-      };
-      console.log(point);
-      for(let i = 0; i < concatedArr.length; i++) {
-        Geofence.containsLocation(point, concatedArr[i])
-          .then(() => this.setPlayList(myStreets[i].music))
-          .catch(() => console.log('no way'))
-      }
-    });
+    // this.watchID = navigator.geolocation.watchPosition((position) => {
+    //   let point = {
+    //     lat: position.coords.latitude,
+    //     lng: position.coords.longitude
+    //   };
+    //   console.log(point);
+    //   for(let i = 0; i < concatedArr.length; i++) {
+    //     Geofence.containsLocation(point, concatedArr[i])
+    //       .then(() => this.setPlayList(myStreets[i].music))
+    //       .catch(() => console.log('no way'))
+    //   }
+    // });
   }
 
   componentWillUnmount() {
@@ -92,8 +92,10 @@ class CustomTabBar extends Component {
   async setPlayList(musiclist) {
     console.log(musiclist);
     console.log('cool');
-    const { MusicActions } = this.props;
-    await MusicActions.requestSetPlayList(musiclist);
+    const { MusicActions, isLogged } = this.props;
+    if(isLogged) {
+      await MusicActions.requestSetPlayList(musiclist);
+    }
   }
 
   renderScene(navigationState) {
@@ -157,7 +159,8 @@ export default  connect(
     return {
       musicSelected: state.music.selectedMusic,
       myStreets: state.music.myStreets,
-      nowPlayList: state.music.nowPlayList
+      nowPlayList: state.music.nowPlayList,
+      isLogged: state.auth.authStatus.isLogged
     };
   },
   dispatch => {

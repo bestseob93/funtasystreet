@@ -6,7 +6,6 @@ import Sound from 'react-native-sound';
 import MusicControl from 'react-native-music-control';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import MDIcon from 'react-native-vector-icons/MaterialIcons';
-import Slider from 'react-native-slider';
 
 const timer = null;
 const musicList = [
@@ -52,7 +51,6 @@ class MusicBar extends Component {
       playing: true,
       shuffle: false,
       muted: false,
-      sliding: false,
       currentTime: 0,
       songDuration: 1,
       musicList: musicList,
@@ -70,9 +68,6 @@ class MusicBar extends Component {
     this.setMusic = this.setMusic.bind(this);
     this.goBackward = this.goBackward.bind(this);
     this.goForward = this.goForward.bind(this);
-    this.onSlidingStart = this.onSlidingStart.bind(this);
-    this.onSlidingChange = this.onSlidingChange.bind(this);
-    this.onSlidingComplete = this.onSlidingComplete.bind(this);
     this.updateMusicControl = this.updateMusicControl.bind(this);
     this.toggleModal = this.toggleModal.bind(this);
     this.renderPlayListItems = this.renderPlayListItems.bind(this);
@@ -184,8 +179,6 @@ class MusicBar extends Component {
       if(err) throw err;
       this.setState({ songDuration: this.sound.getDuration() });
       this.updateMusicControl();
-
-      timer = setInterval(this.updateTime.bind(this, this.sound), 1000);
       this.sound.play((success) => {
         if(success) {
           console.log('music playing successed');
@@ -230,32 +223,6 @@ class MusicBar extends Component {
         playing: true
       });
     }
-  }
-
-  updateTime(sound, obj) {
-    sound.getCurrentTime((seconds) => {
-      // Changes the volume
-      MusicControl.updatePlayback({
-        elapsedTime: seconds
-      });
-
-      this.setState({ currentTime: seconds});
-    });
-  }
-
-  onSlidingStart() {
-    this.setState({ sliding: true });
-  }
-
-  onSlidingChange(value) {
-    let newPosition = value * this.state.songDuration;
-    this.setState({ currentTime: newPosition });
-  }
-
-  onSlidingComplete() {
-    console.log(this.state.currentTime);
-    this.sound.setCurrentTime(this.state.currentTime);
-    this.setState({ sliding: false });
   }
 
   updateMusicControl()  {
@@ -328,15 +295,6 @@ class MusicBar extends Component {
     }
 
     let songPercentage;
-    console.log(this.state.songDuration);
-    if(this.state.songDunration !== undefined) {
-      console.log('in if: ', this.state.songDuration);
-      songPercentage = this.state.currentTime / this.state.songDunration;
-    } else {
-      console.log('else?');
-      songPercentage = 0;
-    }
-
     console.log('songPercentage:' ,songPercentage);
 
     let iconMuted = this.state.muted ? {color: '#f62976'} : {color: '#000'};
@@ -413,19 +371,6 @@ class MusicBar extends Component {
                 <H3 style={{textAlign: 'center', width: 250}}>{this.state.musicList[this.state.musicIndex].track}</H3>
               </View>
             </Row>
-            <Row size={20} style={{ backgroundColor: '#fff'}}>
-              <View style={style.sliderContainer}>
-                <Slider
-                  onSlidingStart={ () => onSlidingStart() }
-                  onSlidingComplete={ () => onSlidingComplete() }
-                  onValueChange={ () => onSlidingChange() }
-                  minimumTrackTintColor='#851c44'
-                  style={ style.slider }
-                  trackStyle={ style.sliderTrack }
-                  thumbStyle={ style.sliderThumb }
-                  value={ songPercentage }/>
-              </View>
-            </Row>
             <Row size={20} style={{ backgroundColor: '#ffffff' }}>
             <View style={style.footerContainer}>
               <View style={style.spaceView}></View>
@@ -489,26 +434,6 @@ const style = {
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center'
-  },
-  sliderContainer: {
-    width: Dimensions.get('window').width
-  },
-  slider: {
-    height: 20,
-  },
-  sliderTrack: {
-    height: 2,
-    backgroundColor: '#333',
-  },
-  sliderThumb: {
-    width: 10,
-    height: 10,
-    backgroundColor: '#f62976',
-    borderRadius: 10 / 2,
-    shadowColor: 'red',
-    shadowOffset: {width: 0, height: 0},
-    shadowRadius: 2,
-    shadowOpacity: 1,
   },
   footerContainer: {
     flex: 1,

@@ -67,6 +67,7 @@
 		6A5096581EC7165D00BD21BE /* funtasy_app_logo_2208.png in Resources */ = {isa = PBXBuildFile; fileRef = 6A5096571EC7165D00BD21BE /* funtasy_app_logo_2208.png */; };
 		6A50965A1EC7166700BD21BE /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6A5096591EC7166700BD21BE /* Launch Screen.storyboard */; };
 		6AA91C441EC739140008FFE4 /* libMusicControl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6AA91C431EC739060008FFE4 /* libMusicControl.a */; };
+		6AEAA7D21EDE067600A84DD2 /* libjschelpers.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3DAD3EAD1DF850E9000B6D8A /* libjschelpers.a */; };
 		6F2228EC7C52485A87795136 /* MaterialCommunityIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1E29CC3DDC69461CAC8076D0 /* MaterialCommunityIcons.ttf */; };
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
 		9ABAA85203D247D9B175FEBA /* libRNVectorIcons.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AF8CA8581F734D8A8E91D296 /* libRNVectorIcons.a */; };
@@ -424,6 +425,7 @@
 				139105C61AF99C1200B5F7CC /* libRCTSettings.a in Frameworks */,
 				832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */,
 				00C302EA1ABCBA2D00DB3ED1 /* libRCTVibration.a in Frameworks */,
+				6AEAA7D21EDE067600A84DD2 /* libjschelpers.a in Frameworks */,
 				139FDEF61B0652A700C62182 /* libRCTWebSocket.a in Frameworks */,
 				150D3C99DE754E0E8D222E31 /* libAirMaps.a in Frameworks */,
 				6A5096151EC7106600BD21BE /* libRCTPushNotification.a in Frameworks */,
@@ -860,6 +862,7 @@
 						TestTargetID = 13B07F861A680F5B00A75B9A;
 					};
 					13B07F861A680F5B00A75B9A = {
+						DevelopmentTeam = SSU3NSCY9W;
 						LastSwiftMigration = 830;
 					};
 					2D02E47A1E0B4A5D006451C7 = {
@@ -1296,7 +1299,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -1441,6 +1444,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
+				DEVELOPMENT_TEAM = SSU3NSCY9W;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-maps/lib/ios/**",
@@ -1470,6 +1474,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = SSU3NSCY9W;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-maps/lib/ios/**",

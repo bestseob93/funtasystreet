@@ -11,24 +11,26 @@ import * as music from '../../ducks/music.duck';
 class Home extends Component {
 
   async componentDidMount() {
-    const { MusicActions } = this.props;
+    const { MusicActions, isLogged } = this.props;
 
-    try {
-      await MusicActions.requestUserStreets();
-      await MusicActions.requestWholeStreets();
-    } catch (e) {
-      console.error(e);
+    if(isLogged) {
+      try {
+        await MusicActions.requestUserStreets();
+        await MusicActions.requestWholeStreets();
+      } catch (e) {
+        console.error(e);
+      }
     }
   }
 
   render() {
     const { onRegionChange } = this;
-    const { myStreets, wholeStreets } = this.props;
+    const { myStreets, wholeStreets, position } = this.props;
 
     return (
       <ScrollView
         style={{marginBottom: 100}}>
-        <MyStreetMap myStreets={myStreets}/>
+        <MyStreetMap myStreets={myStreets} position={position}/>
       </ScrollView>
     );
   }
@@ -38,7 +40,9 @@ export default connect(
   state => {
     return {
       myStreets: state.music.myStreets,
-      wholeStreets: state.music.wholeStreets
+      wholeStreets: state.music.wholeStreets,
+      isLogged: state.auth.authStatus.isLogged,
+      position: state.maps.position
     };
   },
   dispatch => {

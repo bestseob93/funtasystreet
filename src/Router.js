@@ -1,14 +1,14 @@
 import React from 'react';
 import { Scene, Router, Actions, Modal } from 'react-native-router-flux';
 
-import { First, CustomTabBar, TabView, PlayList, MusicStreet, Login, Register, AnimatedView } from './components';
+import { First, CustomTabBar, TabView, PlayList, MusicStreet, Login, Register } from './components';
 import { TabIcon, MyMusicMapIcon } from './components/common';
 
 const RouterComponent = () => {
   return (
     <Router>
         <Scene key="root" hideNavBar>
-          <Scene hi={'hi'} key="first" initial={true} component={First} title="First Home"/>
+          <Scene key="first" initial={true} component={First} title="First Home"/>
             <Scene key="tabmain" tabs component={CustomTabBar} tabBarStyle={{backgroundColor: '#fff'}} tabBarSelectedItem={{backgroundColor: '#ddd'}}>
               <Scene key="home" initial sceneName="home" hideNavBar component={TabView} title="Funtasy Street" navigationBarStyle={{backgroundColor:'white'}} icon={TabIcon}/>
               <Scene key="search" sceneName="search" hideNavBar component={TabView} title="Search" navigationBarStyle={{backgroundColor:'white', borderBottomColor: 'transparent'}} icon={TabIcon}/>
@@ -18,7 +18,6 @@ const RouterComponent = () => {
                 <Scene key="mypagemain" hideNavBar component={TabView} title="MyPage" />
                 <Scene key="mymusicstreet" hideNavBar component={MusicStreet} title="MyMusicStreet"/>
                 <Scene key="playlist" hideNavBar sceneName="playlisst" component={PlayList} title="PlayList"/>
-                <Scene key="testMap" hideNavBar sceneName="testMap" component={AnimatedView} title="testMap"/>
               </Scene>
               <Scene key="mymusicstreetmain" hideNavBar component={MusicStreet} title="MyMusicStreet"/>
             </Scene>

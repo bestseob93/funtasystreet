@@ -1,8 +1,8 @@
 import React, { PropTypes, Component } from 'react';
-
+import { connect } from 'react-redux';
 import { Container, Text, Button, Footer } from 'native-base';
 import { Actions } from 'react-native-router-flux';
-import { Home, Search, MyPage, MyMusicMap, MusicBar, MyStreetView } from '../components';
+import { Home, Search, MyPage, MyMusicMap, MusicBar, MyStreetView, RequiredLogin } from '../components';
 
 const contextTypes = {
   drawer: PropTypes.object
@@ -24,7 +24,11 @@ class TabView extends Component {
 
     switch(props.title) {
       case 'MyMusicMap':
+      if(this.props.isLogged) {
         return <MyMusicMap {...this.props}/>;
+      } else {
+        return <RequiredLogin/>;
+      }
       case 'Search':
         return <Search/>;
       case 'Funtasy Street':
@@ -54,4 +58,11 @@ class TabView extends Component {
 TabView.contextTypes = contextTypes;
 TabView.propTypes = propTypes;
 
-export default TabView;
+export default connect(
+  state => {
+    return {
+      isLogged: state.auth.authStatus.isLogged
+    };
+  },
+  null
+)(TabView);

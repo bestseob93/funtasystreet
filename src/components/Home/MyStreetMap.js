@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, ScrollView, AppState, StyleSheet, Image, Dimensions } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView, AppState, StyleSheet, Image, Dimensions } from 'react-native';
 import { Container, Button, Content, Thumbnail, Card, CardItem, Left, Body, Right, List, ListItem } from 'native-base';
 import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
 import PushNotification from 'react-native-push-notification';
@@ -18,8 +18,8 @@ class MyStreetMap extends Component {
     super(props);
     this.state = {
       region: {
-        latitude: 37.582176,
-        longitude: 127.0095657,
+        latitude: props.position.lat,
+        longitude: props.position.lng,
         latitudeDelta: 0.0922,
         longitudeDelta: 0.0421
       },
@@ -31,8 +31,6 @@ class MyStreetMap extends Component {
     this.onRegionChange = this.onRegionChange.bind(this);
     this.renderMarkers = this.renderMarkers.bind(this);
     this.renderCircles = this.renderCircles.bind(this);
-    // this.renderMusics = this.renderMusics.bind(this);
-    // this.renderMusicItems = this.renderMusicItems.bind(this);
     this.loadPlayList = this.loadPlayList.bind(this);
     this.renderSelectInfos = this.renderSelectInfos.bind(this);
   }
@@ -42,35 +40,35 @@ class MyStreetMap extends Component {
     return nextState.selectedMarker.length !== this.state.selectedMarker.length;
   }
 
-  componentDidMount() {
-    const { myStreets } = this.props;
-    AppState.addEventListener('change', this.pushAlarm);
-    let concatedArr = [];
-    for(let i = 0; i < myStreets.length; i++ ) {
-      concatedArr.push(myStreets[i].circleCoords);
-    }
-    console.log(concatedArr);
+  // componentDidMount() {
+  //   const { myStreets } = this.props;
+  //   AppState.addEventListener('change', this.pushAlarm);
+  //   let concatedArr = [];
+  //   for(let i = 0; i < myStreets.length; i++ ) {
+  //     concatedArr.push(myStreets[i].circleCoords);
+  //   }
+  //   console.log(concatedArr);
 
-    console.log(myStreets);
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        let point = {
-          lat: position.coords.latitude,
-          lng: position.coords.longitude
-        };
+  //   console.log(myStreets);
+  //   navigator.geolocation.getCurrentPosition(
+  //     (position) => {
+  //       let point = {
+  //         lat: position.coords.latitude,
+  //         lng: position.coords.longitude
+  //       };
 
-        console.log(point);
-        for(let i = 0; i < concatedArr.length; i++) {
-          Geofence.containsLocation(point, concatedArr[i])
-            .then(() => console.log(i))
-            .catch(() => console.log('no way'))
-        }
+  //       console.log(point);
+  //       for(let i = 0; i < concatedArr.length; i++) {
+  //         Geofence.containsLocation(point, concatedArr[i])
+  //           .then(() => console.log(i))
+  //           .catch(() => console.log('no way'))
+  //       }
 
-      },
-      (error) => alert(error.message),
-      { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
-    );
-  }
+  //     },
+  //     (error) => alert(error.message),
+  //     { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
+  //   );
+  // }
 
   componentWillUnMount() {
     AppState.removeEventListener('change', this.pushAlarm);
@@ -99,11 +97,8 @@ class MyStreetMap extends Component {
           key={(data.coord.latitude + data.coord.longitude).toString()}
           coordinate={{latitude: data.coord.latitude, longitude: data.coord.longitude}}
           onSelect={(e) => console.log('onSelect', e)}
-          onDrag={(e) => console.log('onDrag', e)}
-          onDragStart={(e) => console.log('onDragStart', e)}
-          onDragEnd={(e) => console.log('onDragEnd', e)}
           onPress={(e) => this.setState({selectedMarker: data.music, selectedStreetName: data.street_name, selectMode: true})}
-          draggable>
+          >
           <CustomMarker key={ i } myStreetIcon={data.selectedIcon}/>
           <MapView.Callout style={styles.customView}>
               <Text>{data.street_name}</Text>
@@ -162,7 +157,7 @@ class MyStreetMap extends Component {
               <ListItem itemDivider>
                 <Text>음악 목록</Text>
               </ListItem>
-                {this.state.selectedMarker.length > 0 ? this.loadPlayList() : (<Text>음악이 없습니다.</Text>) }
+                {this.state.selectedMarker.length > 0 ? this.loadPlayList() : (<ListItem style={{borderBottomWidth: 0}}><Text>음악이 없습니다.</Text></ListItem>) }
               </List>
           </View>
     );
@@ -171,8 +166,8 @@ class MyStreetMap extends Component {
   render() {
     const { onRegionChange, renderMarkers, renderCircles, renderSelectInfos } = this;
     const { myStreets } = this.props;
-
-    console.log(this.state);
+    console.log('get state console');
+    console.log(this.state.region.latitude);
     return (
       <Container>
         <PushController/>
@@ -181,6 +176,9 @@ class MyStreetMap extends Component {
                      style={this.state.selectMode ? styles.mapHalf : styles.map}
                      initialRegion={this.state.region}
                      region={this.state.region}
+                     showsMyLocationButton={true}
+                     showsUserLocation={true}
+                     loadingEnabled={true}
                      onRegionChange={onRegionChange}>
                      {renderMarkers(myStreets)}
                      {renderCircles(myStreets)}
@@ -195,7 +193,7 @@ class MyStreetMap extends Component {
 const styles = StyleSheet.create({
   map: {
     width: width,
-    height: height,
+    height: height-100,
     zIndex: -1
   },
   mapHalf: {
@@ -212,6 +210,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center'
   },
+
 });
 
 export default MyStreetMap;
