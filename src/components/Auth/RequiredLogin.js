@@ -3,8 +3,6 @@ import { View, Text } from 'react-native';
 import { Button } from 'native-base';
 import { Actions } from 'react-native-router-flux';
 
-import NewMusicBar from '../Musics/NewMusicBar';
-
 class RequiredLogin extends Component {
   render() {
     const { requiredContainer, buttonStyle, buttonText } = style;

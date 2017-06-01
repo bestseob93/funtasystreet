@@ -47,7 +47,6 @@ const rejected = {fetching: false, fetched: false};
 
 export default function reducer(state=initialState, action) {
   const payload = action.payload;
-  console.log(payload);
   switch(action.type) {
     case `${REQUEST_SEARCH_RESULTS}_PENDING`:
       return {

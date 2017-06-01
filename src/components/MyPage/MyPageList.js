@@ -33,7 +33,7 @@ class MyPageList extends Component {
     return (
       <Content>
         <List>
-          <ListItem onPress={() => Actions.map()}>
+          <ListItem onPress={() => Actions.tabmain({type: 'refresh'})}>
             <Left>
               <Icon name="ios-plane" style={{
                             color: '#0A69FE'
@@ -62,7 +62,7 @@ class MyPageList extends Component {
               </Badge>
             </Right>
           </ListItem>
-          <ListItem onPress={() => Actions.testMap()}>
+          <ListItem>
             <Left>
               <Icon name="ios-mail-outline"
                     style={{
@@ -72,10 +72,6 @@ class MyPageList extends Component {
             </Left>
             <Body/>
             <Right>
-              <Switch
-                onValueChange={(value) => this.setState({falseSwitchIsOn: value})}
-                style={{marginBottom: 10}}
-                value={this.state.falseSwitchIsOn}/>
             </Right>
           </ListItem>
           <ListItem onPress={onLogout}>

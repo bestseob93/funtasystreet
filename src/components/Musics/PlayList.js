@@ -3,109 +3,6 @@ import { View, Image, SwipeableListView, TouchableHighlight, Text, StyleSheet } 
 import { Button, ListItem, Left, Thumbnail, Body, Icon, Right, Header } from 'native-base';
 import { Actions, ActionConst } from 'react-native-router-flux';
 
-let tracks = [
-  {
-    artist: 'ZAYN(제인)',
-    title: 'Still Got Time (feat. PARTYNEXTDOOR)',
-    image_url: 'https://unsplash.it/300/300?image=0',
-  },
-  {
-    artist: 'Set The Tone',
-    title: 'The Boulevards',
-    image_url: 'https://unsplash.it/300/300?image=1',
-  },
-  {
-    artist: 'Light My Body Up (feat. Nicki Minaj & Lil Wayne)',
-    title: 'David Guetta(데이빗)',
-    image_url: 'https://unsplash.it/300/300?image=2',
-  },
-  {
-    artist: 'The Way I Feel (Original Mix)',
-    title: 'The Node',
-    image_url: 'https://unsplash.it/300/300?image=3',
-  },
-  {
-    artist: "I'll Catch You (Original Mix)",
-    title: 'Angemi',
-    image_url: 'https://unsplash.it/300/300?image=4',
-  },
-  {
-    artist: 'Connected',
-    title: 'ATB & Andrew Rayel',
-    image_url: 'https://unsplash.it/300/300?image=5',
-  },
-  {
-    artist: 'Gang Up',
-    title: 'Young Thug',
-    image_url: 'https://unsplash.it/300/300?image=6',
-  },
-  {
-    artist: 'Some Kinda Wonderful',
-    title: 'Betty Who(베티 후)',
-    image_url: 'https://unsplash.it/300/300?image=7',
-  },
-  {
-    artist: 'Light My Body Up (feat. Nicki Minaj & Lil Wayne)',
-    title: 'David Guetta(데이빗)',
-    image_url: 'https://unsplash.it/300/300?image=8',
-  },
-  {
-    artist: 'The Way I Feel (Original Mix)',
-    title: 'The Node',
-    image_url: 'https://unsplash.it/300/300?image=9',
-  },
-  {
-    artist: "I'll Catch You (Original Mix)",
-    title: 'Angemi',
-    image_url: 'https://unsplash.it/300/300?image=100',
-  },
-  {
-    artist: 'ZAYN(제인)',
-    title: 'Still Got Time (feat. PARTYNEXTDOOR)',
-    image_url: 'https://unsplash.it/300/300?image=101',
-  },
-  {
-    artist: 'Set The Tone',
-    title: 'The Boulevards',
-    image_url: 'https://unsplash.it/300/300?image=102',
-  },
-  {
-    artist: 'Light My Body Up (feat. Nicki Minaj & Lil Wayne)',
-    title: 'David Guetta(데이빗)',
-    image_url: 'https://unsplash.it/300/300?image=103',
-  },
-  {
-    artist: 'The Way I Feel (Original Mix)',
-    title: 'The Node',
-    image_url: 'https://unsplash.it/300/300?image=104',
-  },
-  {
-    artist: "I'll Catch You (Original Mix)",
-    title: 'Angemi',
-    image_url: 'https://unsplash.it/300/300?image=110',
-  },
-  {
-    artist: 'Connected',
-    title: 'ATB & Andrew Rayel',
-    image_url: 'https://unsplash.it/300/300?image=106',
-  },
-  {
-    artist: 'Gang Up',
-    title: 'Young Thug',
-    image_url: 'https://unsplash.it/300/300?image=107',
-  },
-  {
-    artist: 'Some Kinda Wonderful',
-    title: 'Betty Who(베티 후)',
-    image_url: 'https://unsplash.it/300/300?image=108',
-  },
-  {
-    artist: 'Light My Body Up (feat. Nicki Minaj & Lil Wayne)',
-    title: 'David Guetta(데이빗)',
-    image_url: 'https://unsplash.it/300/300?image=109',
-  },
-];
-
 class PlayList extends Component {
   constructor(props) {
     super(props);
@@ -125,7 +22,7 @@ class PlayList extends Component {
   }
 
   genDataSource(rowData) {
-    console.log(rowData);
+    // console.log(rowData);
     const dataBlob = {};
     const sectionIDs = ['Section 0'];
     const rowIDs = [[]];
@@ -148,9 +45,9 @@ class PlayList extends Component {
 
     dataBlob['Section 0'] = {};
     rowData.forEach((el, index) => {
-      console.log(el);
-      console.log('---');
-      console.log(index);
+      // console.log(el);
+      // console.log('---');
+      // console.log(index);
       const rowName = `${index}`;
       dataBlob[sectionIDs[0]][rowName] = {
         id: rowName,
@@ -171,18 +68,6 @@ class PlayList extends Component {
     return (
       <View style={styles.actionsContainer}>
         <TouchableHighlight
-          style={[styles.actionButton, { backgroundColor: 'gold' }]}
-          underlayColor="transparent"
-          onPress={() => console.log(rowID)}>
-          <Icon name="arrow-up"/>
-        </TouchableHighlight>
-        <TouchableHighlight
-          style={[styles.actionButton, { backgroundColor: 'gold' }]}
-          underlayColor="transparent"
-          onPress={() => console.log(rowID)}>
-          <Icon name="arrow-down"/>
-        </TouchableHighlight>
-        <TouchableHighlight
           style={[styles.actionButton, { backgroundColor: '#bb2626' }]}
           underlayColor="transparent"
           onPress={() => this.onDeleteRow(parseInt(rowID))}>
@@ -195,9 +80,9 @@ class PlayList extends Component {
   onDeleteRow(index) {
     const { streetId, streetIndex, onDelete } = this.props;
     let tracks = this.state.tracks;
-    console.log('ondeleterow');
-    console.log(tracks);
-    console.log(tracks[index]._id);
+    // console.log('ondeleterow');
+    // console.log(tracks);
+    // console.log(tracks[index]._id);
 
     onDelete(streetId, tracks[index]._id, streetIndex);
     tracks = [...tracks.slice(0, index), ...tracks.slice(index + 1)];
@@ -254,7 +139,7 @@ class PlayList extends Component {
   }
 
   render() {
-    console.log(this.props);
+    // console.log(this.props);
     return (
       <View style={{ flex: 1 }}>
         <Header>
@@ -274,7 +159,7 @@ class PlayList extends Component {
           style={styles.list}
           contentContainerStyle={styles.contentContainer}
           dataSource={this.state.dataSource}
-          maxSwipeDistance={210}
+          maxSwipeDistance={70}
           renderQuickActions={this.renderCustomQuickActions}
           renderRow={this.renderRow}
           renderSeparator={this.renderSeparator}

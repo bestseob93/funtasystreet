@@ -16,7 +16,7 @@ const setStorage = async (receivedToken) => {
 const getStorage = async () => {
   try {
     var valueToken = await AsyncStorage.getItem('mytoken');
-    console.log(valueToken);
+    // console.log(valueToken);
     if (valueToken !== null) {
       // 로그인 정보 status 보내기.
       return true;
@@ -39,10 +39,10 @@ export const loginUser = (useremail, password) => {
     }
   }).then(checkStatus)
     .then( res => {
-      console.log(res.data.token);
+      // console.log(res.data.token);
       const receivedToken = res.data.token;
       setStorage(receivedToken);
-      Actions.tabmain({type: 'reset'});
+      Actions.tabmain({type: 'refresh'});
       return res;
   }).catch( err => {
       throw err;
@@ -59,7 +59,7 @@ export const registerUser = (useremail, password) => {
     }
   }).then(checkStatus)
     .then( res => {
-      console.log(res.data.token);
+      // console.log(res.data.token);
       const receivedToken = res.data.token;
       setStorage(receivedToken);
       Actions.tabmain();
@@ -83,6 +83,6 @@ export const logoutUser = () => {
 }
 
 export const checkAuthStatus = () => {
-  console.log(getStorage());
+  // console.log(getStorage());
   return getStorage();
 };

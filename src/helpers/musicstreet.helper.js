@@ -27,7 +27,7 @@ export const registerStreet = async (selectedIcon, street_name, street_radius, r
       }
     }).then(checkStatus)
       .then( res => {
-        console.log('who are you');
+        // console.log('who are you');
         Actions.home();
         return res;
     }).catch( err => {
@@ -57,7 +57,7 @@ export const registerStreet = async (selectedIcon, street_name, street_radius, r
       }
     }).then(checkStatus)
       .then( res => {
-        console.log("are you working?");
+        // console.log("are you working?");
         Actions.tabmain({type: 'refresh'});
         return res;
     }).catch( err => {
@@ -94,7 +94,7 @@ export const addMusicToStreet = async (id, music) => {
 
 export const deleteMusic = async (streetid, musicid, streetIndex) => {
   let token = await AsyncStorage.getItem('mytoken');
-
+  // console.log(musicid);
   return axios({
     method: 'DELETE',
     url: `${ROOT_URL}/musicitem/${streetid}/${musicid}`,
@@ -111,7 +111,7 @@ export const deleteMusic = async (streetid, musicid, streetIndex) => {
 export const getUserStreets = async () => {
   let token = await AsyncStorage.getItem('mytoken');
 
-  console.log(token);
+  // console.log(token);
   return axios({
     method: 'GET',
     url: `${ROOT_URL}`,
@@ -141,5 +141,22 @@ export const getWholeStreets = () => {
 export const setPlayList = (musiclist) => {
   return new Promise((resolve, reject) => {
     resolve(musiclist);
+  });
+}
+
+export const requestVisitCount = async (id) => {
+  let token = await AsyncStorage.getItem('mytoken');
+
+  return axios({
+    method: 'PUT',
+    url: `${ROOT_URL}/recentVisit/${id}`,
+    headers: {
+      Authorization: token
+    }
+  }).then(checkStatus)
+    .then( res => {
+      return res;
+  }).catch( err => {
+      throw err;
   });
 }

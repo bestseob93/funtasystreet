@@ -12,3 +12,9 @@ export const getCurrentAddress = (lat, lng) => {
       throw err;
   });
 };
+
+export const compareStreet = (streetName) => {
+  return new Promise((resolve, reject) => {
+    resolve(streetName);
+  });
+}

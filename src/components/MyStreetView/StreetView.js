@@ -3,7 +3,7 @@ import { View, NativeModules, requireNativeComponent } from 'react-native';
 
 const SwiftStreetView = requireNativeComponent('SwiftStreetView', StreetView);
 //const SwiftStreet = NativeModules.SwiftStreetVueManager;
-console.log(SwiftStreetView);
+// console.log(SwiftStreetView);
 class StreetView extends Component {
 
   render() {

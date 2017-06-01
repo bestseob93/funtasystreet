@@ -137,9 +137,9 @@ class MyMusicMap extends Component {
       method: 'GET',
       url: `https://maps.googleapis.com/maps/api/geocode/json?latlng=${coordinate.latitude},${coordinate.longitude}&language=ko&key=AIzaSyAZ4wxXzeheT3jy1dRY-8kyTLdO4Vl0AJI`
     }).then( res => {
-        console.log(res);
+        // console.log(res);
         let address = res.data.results[3].formatted_address;
-        console.log(address);
+        // console.log(address);
         MusicActions.requestRegisterStreet(this.state.selectedIcon, this.state.street_name, this.state.street_radius, this.state.range_color, coordinate, address, music).then(() => {
           this._clearState();
         });

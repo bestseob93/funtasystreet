@@ -1,5 +1,5 @@
 import React from 'react';
-import { Scene, Router, Actions, Modal } from 'react-native-router-flux';
+import { Scene, Router, Actions, ActionConst, Modal } from 'react-native-router-flux';
 
 import { First, CustomTabBar, TabView, PlayList, MusicStreet, Login, Register } from './components';
 import { TabIcon, MyMusicMapIcon } from './components/common';
@@ -9,7 +9,7 @@ const RouterComponent = () => {
     <Router>
         <Scene key="root" hideNavBar>
           <Scene key="first" initial={true} component={First} title="First Home"/>
-            <Scene key="tabmain" tabs component={CustomTabBar} tabBarStyle={{backgroundColor: '#fff'}} tabBarSelectedItem={{backgroundColor: '#ddd'}}>
+            <Scene key="tabmain" tabs component={CustomTabBar} type={ActionConst.REFRESH} tabBarStyle={{backgroundColor: '#fff'}} tabBarSelectedItem={{backgroundColor: '#ddd'}}>
               <Scene key="home" initial sceneName="home" hideNavBar component={TabView} title="Funtasy Street" navigationBarStyle={{backgroundColor:'white'}} icon={TabIcon}/>
               <Scene key="search" sceneName="search" hideNavBar component={TabView} title="Search" navigationBarStyle={{backgroundColor:'white', borderBottomColor: 'transparent'}} icon={TabIcon}/>
               <Scene key="mymusicmap" sceneName="mymusicmap" component={TabView} title="MyMusicMap" hideNavBar icon={TabIcon}/>

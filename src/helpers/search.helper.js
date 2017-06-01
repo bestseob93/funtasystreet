@@ -16,7 +16,7 @@ export const fetchSearchResults = (searchResult) => {
 }
 
 export const fetchNextResults = (nextUrl, nowPage) => {
-  console.log(nextUrl);
+  // console.log(nextUrl);
   return axios({
     method: 'GET',
     url: nextUrl

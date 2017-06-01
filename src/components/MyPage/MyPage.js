@@ -41,7 +41,7 @@ class MyPage extends Component {
         try {
           await MusicActions.requestUserStreets();
         } catch (e) {
-          console.error(e);
+          // console.error(e);
         }
       }
     }
@@ -58,14 +58,14 @@ class MyPage extends Component {
       try {
         await AsyncStorage.removeItem('mytoken');
       } catch (error) {
-        console.error(error);
+        // console.error(error);
       }
     };
 
     render() {
       const { isLogged, myStreets } = this.props;
       const { handleLogout } = this;
-      console.log(myStreets);
+      // console.log(myStreets);
         return (
           <View style={{flex:1}}>
           {this.props.isLogged ? (

@@ -11,13 +11,10 @@ import RequiredLogin from './Auth/RequiredLogin';
 // 탭뷰 셋트
 import CustomTabBar from './CustomTabBar';
 import TabView from './TabView';
-import NavigationDrawer from './NavigationDrawer';
-
 // 메인 4개 탭
 import Home from './Home/Home';
 import Search from './Search/Search';
 import MyMusicMap from './MyMusicMap/MyMusicMap';
-import MyMusicMapFill from './MyMusicMap/MyMusicMapFill';
 import StreetView from './MyStreetView/StreetView'; // 스트리트 뷰
 import MyStreetView from './MyStreetView/MyStreetView';
 import MyPage from './MyPage/MyPage';
@@ -40,10 +37,8 @@ export {
   PlayList,
   Search,
   MyMusicMap,
-  MyMusicMapFill,
   MyStreetView,
   StreetView,
   CustomTabBar,
-  TabView,
-  NavigationDrawer
+  TabView
 };

@@ -7,6 +7,7 @@ import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
 import MyStreetMap from './MyStreetMap';
 
 import * as music from '../../ducks/music.duck';
+import * as maps from '../../ducks/maps.duck';
 
 class Home extends Component {
 
@@ -24,13 +25,15 @@ class Home extends Component {
   }
 
   render() {
+    // console.log('home');
+    // console.log(this.props);
     const { onRegionChange } = this;
-    const { myStreets, wholeStreets, position } = this.props;
+    const { myStreets, wholeStreets, position, MapsActions } = this.props;
 
     return (
       <ScrollView
         style={{marginBottom: 100}}>
-        <MyStreetMap myStreets={myStreets} position={position}/>
+        <MyStreetMap myStreets={myStreets} position={position} MapsActions={MapsActions}/>
       </ScrollView>
     );
   }
@@ -50,7 +53,10 @@ export default connect(
       MusicActions: bindActionCreators({
         requestUserStreets: music.requestGetUserStreets,
         requestWholeStreets: music.requestGetWholeStreets
-      }, dispatch)
+      }, dispatch),
+      MapsActions: bindActionCreators({
+        requestCompareStreet: maps.requestCompareStreet
+      })
     };
   }
 )(Home);

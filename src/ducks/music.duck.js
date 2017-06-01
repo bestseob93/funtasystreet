@@ -8,6 +8,7 @@ export const GET_USER_STREETS = "GET_USER_STREETS";
 export const GET_WHOLE_STREETS = "GET_WHOLE_STREETS";
 export const SET_PLAY_LIST = "SET_PLAY_LIST";
 export const DELETE_MUSIC = "DELETE_MUSIC";
+export const VISIT_COUNT = "VISIT_COUNT";
 
 const fetchSelectMusic = (selectedMusic) => {
   if(selectedMusic) {
@@ -65,6 +66,13 @@ export const requestDeleteMusic = (streetid, musicid, streetIndex) => ({
   }
 });
 
+export const requestVisit = (id) => ({
+  type: VISIT_COUNT,
+  payload: {
+    promise: helper.requestVisitCount(id)
+  }
+});
+
 const requests = {
   fetching: false,
   fetched: false,
@@ -83,6 +91,7 @@ const initialState = {
     title: ""
   },
   registerRequest: { ...requests },
+  setRequest : { ...requests },
   request: {
     myStreets: { ...requests },
     wholeStreets: { ...requests },
@@ -97,7 +106,7 @@ const rejected = {fetching: false, fetched: false};
 
 export default function reducer(state=initialState, action) {
   const payload = action.payload;
-  console.log(payload);
+  // console.log(payload);
   switch(action.type) {
     case `${PLAY_SELECTED_MUSIC}`:
       return {
@@ -180,6 +189,7 @@ export default function reducer(state=initialState, action) {
     case `${ADD_MUSIC_TO_STREET}_FULFILLED`:
       return {
         ...state,
+        mystreets: payload.data.musicstreets,
         request: {
           addMusicStreets: { ...fulfilled }
         }
@@ -193,16 +203,19 @@ export default function reducer(state=initialState, action) {
       };
     case `${SET_PLAY_LIST}_PENDING`:
       return {
-        ...state
+        ...state,
+        setRequest: { ...pending }
       };
     case `${SET_PLAY_LIST}_FULFILLED`:
       return {
         ...state,
+        setRequest: { ...fulfilled },
         nowPlayList: payload
       };
     case `${SET_PLAY_LIST}_REJECTED`:
       return {
-        ...state
+        ...state,
+        setRequest: { ...rejected }
       };
     case `${DELETE_MUSIC}_PENDING`:
       return {
@@ -214,6 +227,7 @@ export default function reducer(state=initialState, action) {
     case `${DELETE_MUSIC}_FULFILLED`:
       return {
         ...state,
+        nowPlayList: payload.res.data.musicstreet.music,
         request: {
           deleteMusicItem: { ...fulfilled }
         }
@@ -224,6 +238,18 @@ export default function reducer(state=initialState, action) {
         request: {
           deleteMusicItem: { ...rejected }
         }
+      };
+    case `${VISIT_COUNT}_PENDING`:
+      return {
+        ...state
+      };
+    case `${VISIT_COUNT}_FULFILLED`:
+      return {
+        ...state
+      };
+    case `${VISIT_COUNT}_REJECTED`:
+      return {
+        ...state
       };
     default:
       return state;

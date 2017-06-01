@@ -46,7 +46,7 @@ class SearchList extends Component {
   }
 
   componentWillMount() {
-    console.log('componentWillMount');
+    // console.log('componentWillMount');
     const { data } = this.props;
     this.setState({
       datas: data,
@@ -111,7 +111,7 @@ class SearchList extends Component {
 
   renderRow(item) {
     const { isFetching } = this.props;
-    console.log(item);
+    // console.log(item);
 
     if(item.artwork_url === null) {
       item.artwork_url = "https://c1.staticflickr.com/5/4194/33900642883_e12fce7386_b.jpg"
@@ -153,7 +153,7 @@ class SearchList extends Component {
       isOpen: visible,
       selectMusic: item
     });
-    console.log(item);
+    // console.log(item);
   }
 
   async playSelectedMusic(selectedMusic) {
@@ -162,7 +162,7 @@ class SearchList extends Component {
     try {
       await musicSel(selectedMusic);
     } catch(e) {
-      console.error(e);
+      // console.error(e);
     }
   }
 
@@ -247,7 +247,6 @@ class SearchList extends Component {
                      <Text style={styles.selectMusicMargin}>{this.state.selectMusic.title}</Text>
                      <Button onPress={() => newStreetButtonPress()} style={styles.selectMusicButton} full><Text>음악 거리 새로 만들기</Text></Button>
                      <Button onPress={() => existStreetButtonPress()} style={styles.selectMusicButton} full><Text>기존 거리에 음악 추가하기</Text></Button>
-                     <Button style={styles.selectMusicButton} full><Text>공유하기</Text></Button>
                      <Button onPress={clearState} style={styles.selectMusicButton} full><Text>취소</Text></Button>
                    </View>
                  </View>

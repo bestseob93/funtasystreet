@@ -51,7 +51,6 @@ const rejected = {fetching: false, fetched: false};
 
 export default function reducer(state=initialState, action) {
   const payload = action.payload;
-  console.log(payload);
   // if(Array.isArray(payload)) {
   //   console.log(payload[0]);
   // }

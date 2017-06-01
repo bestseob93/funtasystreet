@@ -43,9 +43,9 @@ class SwiftStreetView: RCTView, GMSPanoramaViewDelegate {
   
   func setLabelAddress(width: CGFloat, height: CGFloat) {
     label = UILabel()
-    label.frame = CGRect(x: 0, y: height-123, width: 30, height: 40)
+    label.frame = CGRect(x: 0, y: height-150, width: width, height: 40)
     label.text = "불러오는 중.."
-    label.center.x = CGFloat(width / 4)
+
     label.textColor = UIColor.white
     label.layer.backgroundColor = UIColor(red: 0/255, green: 0/255, blue: 0/255, alpha: 0.7).cgColor
     label.layer.cornerRadius = 4

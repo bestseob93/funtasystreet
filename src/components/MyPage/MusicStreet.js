@@ -4,6 +4,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Container, Text, Content, Header, Title, Left, Body, Right, Button, List, ListItem, Icon } from 'native-base';
 import { Actions, ActionConst } from 'react-native-router-flux';
+import moment from 'moment';
 
 import * as music from '../../ducks/music.duck';
 
@@ -27,7 +28,7 @@ class MusicStreet extends Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    console.log(nextProps);
+    // console.log(nextProps);
     if(this.props.isDeleted !== nextProps.isDeleted) {
       return nextProps.isDeleted;
     } else {
@@ -46,20 +47,21 @@ class MusicStreet extends Component {
       stream_url: this.props.stream_url,
       duration: this.props.duration
     };
-    console.log(id);
+    // console.log(id);
     if(this.props.isFromSearch) {
       await MusicActions.requestAddMusicToStreet(id, music);
     }
   }
 
-  toPlayList() {
-    Actions.playlist({ music: data[0].music, streetId: data[0]._id, streetIndex: i, onDelete: MusicActions.requestDeleteMusic });
+  toPlayList(data) {
+    const { MusicActions } = this.props;
+    Actions.playlist({ music: data.music, streetId: data._id, streetIndex: 0, onDelete: MusicActions.requestDeleteMusic });
   }
 
 // TODO: 지도 등록할 때 좌표 값 외에 주소도 저장.
   renderPlayLists(data) {
-    console.log('renderplaylist');
-    console.log(typeof data);
+    // console.log('renderplaylist');
+    // console.log(typeof data);
     const { MusicActions } = this.props;
 
     if(data.length === 1) {
@@ -68,11 +70,11 @@ class MusicStreet extends Component {
           <Body>
             <Text>{data[0].street_name}</Text>
             <Text note>{data[0].address}</Text>
-            <Text note>{data[0].date.created}</Text>
+            <Text note>생성날짜: {moment(data[0].date.created).format('LL')}</Text>
           </Body>
           <Right>
-            <Button transparent onPress={() => this.toPlayList()}>
-              <Text>{item.music.length}</Text>
+            <Button transparent onPress={() => this.toPlayList(data[0])}>
+              <Text>{data[0].music.length}</Text>
               <Icon name="ios-arrow-forward" style={{color: '#c1c1c1'}}/>
             </Button>
           </Right>
@@ -81,15 +83,15 @@ class MusicStreet extends Component {
     }
 
     return data.map((item, i) => {
-      console.log(item._id);
-      console.log(i);
-      console.log('mapping');
+      // console.log(item._id);
+      // console.log(i);
+      // console.log('mapping');
       return (
         <ListItem key={item._id} onPress={() => this.addPlayList(item._id)}>
           <Body>
             <Text>{item.street_name}</Text>
             <Text note>{item.address}</Text>
-            <Text note>{item.date.created}</Text>
+            <Text note>생성날짜: {moment(item.date.created).format('LL')}</Text>
           </Body>
           <Right>
             <Button transparent onPress={() => Actions.playlist({ music: item.music, streetId: item._id, streetIndex: i, onDelete: MusicActions.requestDeleteMusic })}>
@@ -105,9 +107,9 @@ class MusicStreet extends Component {
   render() {
     const { renderPlayLists, backTo } = this;
     const { myStreets } = this.props;
-    console.log('render part');
-    console.log(typeof myStreets);
-    console.log(this.nextProps);
+    // console.log('render part');
+    // console.log(typeof myStreets);
+    // console.log(this.nextProps);
     return (
       <Container>
         <Header>

@@ -49,7 +49,7 @@ class First extends Component {
   handleAppStateChange(appState) {
 
     if(appState === 'background') {
-      console.log('background');
+      // console.log('background');
       // PushNotification.localNotificationSchedule({
       //   message: "My Notification Message",
       //   date: new Date(Date.now() + (6 * 1000)) // in 60 secs
@@ -67,7 +67,7 @@ class First extends Component {
     // }
 
   render() {
-    console.log(this.props.mapStatus.currentAddress + this.props.mapStatus.currentPosition);
+    // console.log(this.props.mapStatus.currentAddress + this.props.mapStatus.currentPosition);
 
     const { container, wrapper, buttonContainer, slide1, slide2, slide3, text, buttonStyle } = styles;
     return (
@@ -79,26 +79,26 @@ class First extends Component {
             </Text>
           </View>
           <View style={slide2}>
-            <Text style={text}>나만의 음악 지도를</Text>
-            <Text style={text}>만들어보세요</Text>
-          </View>
-          <View style={slide3}>
             <View style={{justifyContent: 'center', alignItems: 'center'}}>
-            <Text style={text}>음악 거리를 만들고</Text>
-            <Text style={text}>노래를 추가하고</Text>
-            <Text style={text}>그 장소에 있으면 그 노래가</Text>
+              <View style={{flexDirection: 'row'}}><Text style={{color: '#ff3f35', fontSize: 24, fontWeight: 'bold', marginBottom: 10}}>노래</Text><Text style={text}>를 검색하고</Text></View>
+              <View style={{flexDirection: 'row'}}><Text style={{color: '#ff3f35', fontSize: 24, fontWeight: 'bold', marginBottom: 10}}>음악 거리</Text><Text style={text}>에 담아</Text></View>
+              <View style={{flexDirection: 'row'}}><Text style={text}>자신만의 </Text><Text style={{color: '#ff3f35', fontSize: 24, fontWeight: 'bold', marginBottom: 10}}>음악 지도</Text><Text style={text}>를 만드세요!</Text></View>
             </View>
               <TouchableOpacity transparent>
                 <PushController/>
               </TouchableOpacity>
-              <View style={buttonContainer}>
-                <TouchableOpacity style={buttonStyle} onPress={() => Actions.login()}>
-                  <Text style={{color: '#fff'}}>로그인</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={buttonStyle} onPress={() => Actions.tabmain({type: 'reset'})}>
-                  <Text style={{color: '#fff'}}>살피기</Text>
-                </TouchableOpacity>
-              </View>
+          </View>
+          <View style={slide3}>
+            <Text style={text}>다음에 그 거리에서</Text>
+            <Text style={text}>저장했던 노래를 들어봐요</Text>
+            <View style={buttonContainer}>
+              <TouchableOpacity style={buttonStyle} onPress={() => Actions.login()}>
+                <Text style={{color: '#fff'}}>로그인</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={buttonStyle} onPress={() => Actions.tabmain({type: 'reset'})}>
+                <Text style={{color: '#fff'}}>살피기</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </Swiper>
     );
@@ -126,13 +126,13 @@ const styles = {
   },
   slide3: {
     flex: 1,
-    justifyContent: 'space-around',
+    justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#85c8e9',
   },
   text: {
     color: '#fff',
-    fontSize: 30,
+    fontSize: 24,
     marginBottom: 10,
     fontWeight: 'bold',
   },

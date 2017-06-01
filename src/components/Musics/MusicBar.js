@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
-import { Dimensions, Modal, View } from 'react-native';
-import { Container, List, ListItem, Toast, H3, Button, Content, Header, Left, Body, Right, Thumbnail, Text, Footer, Icon } from 'native-base';
+import { Dimensions, Modal, View, TouchableOpacity } from 'react-native';
+import { ActionSheet, Container, List, ListItem, Toast, H3, Button, Content, Header, Left, Body, Right, Thumbnail, Text, Footer, Icon } from 'native-base';
 import { Actions } from 'react-native-router-flux';
 import Sound from 'react-native-sound';
 import MusicControl from 'react-native-music-control';
@@ -47,6 +47,7 @@ class MusicBar extends Component {
     super(props);
 
     this.state = {
+      playingSong: {},
       modalVisible: false,
       playing: true,
       shuffle: false,
@@ -71,6 +72,7 @@ class MusicBar extends Component {
     this.updateMusicControl = this.updateMusicControl.bind(this);
     this.toggleModal = this.toggleModal.bind(this);
     this.renderPlayListItems = this.renderPlayListItems.bind(this);
+    this.openPlayList = this.openPlayList.bind(this);
   }
 
   componentDidMount() {
@@ -90,8 +92,8 @@ class MusicBar extends Component {
     MusicControl.on('nextTrack', this.goForward.bind(this));
     MusicControl.on('previousTrack', this.goBackward.bind(this));
 
-    console.log('componentDidMount');
-    console.log(this.state.musicIndex);
+    // console.log('componentDidMount');
+    // console.log(this.state.musicIndex);
 
     setTimeout(() => {
           this.setMusic();
@@ -100,8 +102,9 @@ class MusicBar extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    console.log(this.props.nowPlayList);
-    console.log(nextProps.nowPlayList);
+    // console.log('componentwillreceiveProps');
+    // console.log(this.props.nowPlayList);
+    // console.log(nextProps.nowPlayList);
     if(this.state.musicList === nextProps.nowPlayList) return;
     if(nextProps.nowPlayList.length > 0) {
       this.setState({
@@ -111,11 +114,18 @@ class MusicBar extends Component {
     }
   }
 
+
+
   componentDidUpdate(prevProps, prevState) {
-    console.log('componentDidUpdate');
-    console.log(this.state.musicIndex);
+    // console.log('componentDidUpdate');
+    // console.log(this.state.musicIndex);
     if(prevState.musicIndex === this.state.musicIndex) return;
-    this.setMusic();
+    
+      this.setMusic();
+  }
+
+  componentWillUnmount() {
+    this.sound.stop().release();
   }
 
   togglePlay() {
@@ -167,9 +177,9 @@ class MusicBar extends Component {
   }
 
   setMusic() {
-    console.log('setMusic');
-    console.log(this.state.musicList);
-    console.log(this.state.musicIndex);
+    // console.log('setMusic');
+    // console.log(this.state.musicList);
+    // console.log(this.state.musicIndex);
     let musicUrl = this.state.musicList[this.state.musicIndex].stream_url + '?client_id=56700de568277ccc7ab1770ef756a8f8';
     Sound.setCategory('Playback');
 
@@ -181,10 +191,10 @@ class MusicBar extends Component {
       this.updateMusicControl();
       this.sound.play((success) => {
         if(success) {
-          console.log('music playing successed');
+          // console.log('music playing successed');
           this.goForward();
         } else {
-          console.log('playback failed due to audio decoding error');
+          // console.log('playback failed due to audio decoding error');
         }
       });
     });
@@ -206,8 +216,8 @@ class MusicBar extends Component {
   }
 
   goForward() {
-    console.log(this.state.musicList.length);
-    console.log(this.state.musicIndex);
+    // console.log(this.state.musicList.length);
+    // console.log(this.state.musicIndex);
 
     if(this.state.musicIndex > this.state.musicList.length - 1 || this.state.musicIndex === this.state.musicList.length - 1) {
           Toast.show({
@@ -253,11 +263,34 @@ class MusicBar extends Component {
 
   renderPlayListItems(datas) {
     console.log(datas);
-    return datas.map((item) => {
+    const { streetId, onDelete } = this.props;
+    let BUTTONS = [
+      '바로 듣기',
+      '삭제',
+      '취소',
+    ];
+    var DESTRUCTIVE_INDEX = 1;
+    var CANCEL_INDEX = 2;
+    return datas.map((item, i) => {
       return (
-        <ListItem thumbnail key={item.stream_url}>
+        <ListItem thumbnail key={item.stream_url} onPress={()=> ActionSheet.show(
+            {
+              options: BUTTONS,
+              cancelButtonIndex: CANCEL_INDEX,
+              destructiveButtonIndex: DESTRUCTIVE_INDEX,
+              title: item.track
+            },
+            (buttonIndex) => {
+              if(BUTTONS[buttonIndex] === '삭제') {
+                console.log(item);
+                onDelete(streetId, item._id, null);
+              } else if(BUTTONS[buttonIndex] === '바로 듣기') {
+                this.setState({musicIndex: i, currentTime: 0, playing: true})
+              }
+            }
+            )}>
           <Left>
-            <Thumbnail source={{uri: `${item.artist_url}`}}/>
+            <Thumbnail size={80} source={{uri: `${item.artist_url}`}}/>
           </Left>
           <Body>
             <Text>{item.track}</Text>
@@ -267,6 +300,13 @@ class MusicBar extends Component {
           </Right>
         </ListItem>
       )
+    });
+  }
+
+  openPlayList() {
+    this.setState({
+      modalVisible: true,
+      currentPlayListMode: true
     });
   }
 
@@ -286,7 +326,7 @@ class MusicBar extends Component {
     const { musicBarStyle, thumbnailSize, buttonStyle } = style;
 
     let tSizeArtworkUrl = '';
-    console.log(this.state.musicList[this.state.musicIndex].artist_url);
+    // console.log(this.state.musicList[this.state.musicIndex].artist_url);
     if(this.state.musicList[this.state.musicIndex].artist_url !== null) {
       tSizeArtworkUrl = this.state.musicList[this.state.musicIndex].artist_url.replace("large.jpg", "t500x500.jpg");
     } else {
@@ -295,33 +335,32 @@ class MusicBar extends Component {
     }
 
     let songPercentage;
-    console.log('songPercentage:' ,songPercentage);
+    // console.log('songPercentage:' ,songPercentage);
 
     let iconMuted = this.state.muted ? {color: '#f62976'} : {color: '#000'};
     let iconShuffled = this.state.shuffled ? {color: '#f62976'} : {color: '#000'};
 
     return (
       <View style={ musicBarStyle } >
-        <Button style={ buttonStyle }
-                onPress={() => toggleModal(true)}>
+        <Button style={ buttonStyle }>
             {/* TODO:비어있을 경우 버튼 막기 추가하기 */}
             {/* Thumbnail */}
-            <View style={{flex:0.2}}>
+            <TouchableOpacity style={{flex:0.2}} onPress={() => toggleModal(true)}>
               <Thumbnail style={ thumbnailSize }
                          source={{uri: this.state.musicList[this.state.musicIndex].artist_url === '' ? 'https://i1.sndcdn.com/avatars-000230469080-ka0bxj-t500x500.jpg' : `${this.state.musicList[this.state.musicIndex].artist_url}`}}/>
-            </View>
+            </TouchableOpacity>
 
             {/* Artists & Title */}
-            <View style={{flex: 0.5}}>
+            <TouchableOpacity style={{flex: 0.5}} onPress={() => toggleModal(true)}>
               <Text numberOfLines={1} style={{fontSize: 13}}>{this.state.musicList[this.state.musicIndex].track === '' ? '음악 거리가 비어있습니다.' : this.state.musicList[this.state.musicIndex].track}</Text>
-            </View>
+            </TouchableOpacity>
 
             {/* Control Buttons */}
             <View style={{flex:0.3, flexDirection: 'row', justifyContent: 'flex-end'}}>
               { this.state.playing ? <Icon style={{color: '#ffffff'}} name="ios-pause" onPress={() => togglePlay()}/> :
                                <Icon style={{color: '#ffffff'}} name="ios-play" onPress={() => togglePlay()}/>}
                 <Icon style={{color: '#ffffff'}} name="ios-skip-forward" onPress={() => goForward()}/>
-                <MDIcon name="playlist-play" style={{color: '#ffffff', fontSize: 28}} onPress={Actions.playlistindepend}/>
+                <MDIcon name="playlist-play" style={{color: '#ffffff', fontSize: 28}} onPress={() => this.openPlayList()}/>
             </View>
         </Button>
         <Modal
@@ -343,8 +382,7 @@ class MusicBar extends Component {
                 </Right>
               </Header>
               <Content>
-                <List>
-                  <ListItem><Text>hihi</Text></ListItem>
+                <List style={{marginTop: 15}}>
                   {renderPlayListItems(this.state.musicList)}
                 </List>
               </Content>
